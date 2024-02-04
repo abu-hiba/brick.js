@@ -19,8 +19,8 @@ const createRandomBall = () => {
     const radius = getRand(10, 40);
 
     const initialPosition = {
-        x: getRand(radius, canvas.width),
-        y: getRand(radius, canvas.height),
+        x: getRand(radius, canvas.width - radius),
+        y: getRand(radius, canvas.height - radius),
     };
 
     const velocity = {
