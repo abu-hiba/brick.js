@@ -35,19 +35,20 @@ export class Ball {
     };
 
     move() {
+        this.detectCollision();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     };
 
     detectCollision() {
         const collidesWithRightEdge =
-            this.position.x + this.velocity.x > this.canvas.width - this.radius;
+            this.position.x > this.canvas.width - this.radius;
         const collidesWithLeftEdge =
-            this.position.x + this.velocity.x < this.radius;
+            this.position.x < this.radius;
         const collidesWithBottomEdge =
-            this.position.y + this.velocity.y > this.canvas.height - this.radius;
+            this.position.y > this.canvas.height - this.radius;
         const collidesWithTopEdge =
-            this.position.y + this.velocity.y < this.radius;
+            this.position.y < this.radius;
 
         if (collidesWithRightEdge || collidesWithLeftEdge) {
             this.velocity.x = -this.velocity.x;

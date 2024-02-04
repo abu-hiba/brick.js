@@ -47,7 +47,6 @@ const loop = () => {
 
     balls.forEach((ball) => {
         ball.draw();
-        ball.detectCollision();
         ball.move();
     });
 };
