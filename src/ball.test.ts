@@ -17,5 +17,18 @@ describe('Ball', () => {
         expect(ball).toBeTruthy();
         expect(getContext).toHaveBeenCalledWith('2d');
     });
+
+    it('should throw if canvas context is not available', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => { return null; },
+        } as HTMLCanvasElement;
+
+        // Act
+        const createBall = () => new Ball(mockCanvas, { x: 50, y: 50 }, 10);
+
+        // Assert
+        expect(createBall).toThrowError('Could not get canvas context');
+    });
 });
 
