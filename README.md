@@ -1,16 +1,21 @@
 # brick.js
 
-## To run dev server
+## Development
+### Install dependencies
 ```sh
-npm run dev
+pnpm install
+```
+### To run dev server
+```sh
+pnpm dev
 ```
 
-## To build
+## Build
+### To build
 ```sh
-npm run build
+pnpm build
 ```
-
-## To serve build locally
+### To serve build locally
 ```sh
-npm run preview
+pnpm preview
 ```

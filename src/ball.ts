@@ -22,7 +22,7 @@ export class Ball {
         this.ctx = context;
     };
 
-    draw() {
+    readonly draw = () => {
         this.ctx.save();
         const path = new Path2D();
         this.ctx.beginPath();
@@ -30,24 +30,23 @@ export class Ball {
         path.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
         this.ctx.fill(path);
         this.ctx.restore();
-
-        return path;
     };
 
-    move() {
+    readonly move = () => {
+        this.detectCollision();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     };
 
-    detectCollision() {
+    private detectCollision = () => {
         const collidesWithRightEdge =
-            this.position.x + this.velocity.x > this.canvas.width - this.radius;
+            this.position.x > this.canvas.width - this.radius;
         const collidesWithLeftEdge =
-            this.position.x + this.velocity.x < this.radius;
+            this.position.x < this.radius;
         const collidesWithBottomEdge =
-            this.position.y + this.velocity.y > this.canvas.height - this.radius;
+            this.position.y > this.canvas.height - this.radius;
         const collidesWithTopEdge =
-            this.position.y + this.velocity.y < this.radius;
+            this.position.y < this.radius;
 
         if (collidesWithRightEdge || collidesWithLeftEdge) {
             this.velocity.x = -this.velocity.x;
