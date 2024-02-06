@@ -93,11 +93,151 @@ describe('Ball', () => {
             { x: 1, y: 1 }
         );
 
+        // cast to any to access private method
+        const detectCollision = vi.spyOn(ball as any, 'detectCollision');
+
         // Act
         ball.move();
 
         // Assert
-        expect(ball.position).toEqual({ x: 51, y: 51 });
+        // cast to any to access private properties
+        const position = (ball as any).position;
+        const velocity = (ball as any).velocity;
+        expect(position).toEqual({ x: 51, y: 51 });
+        expect(velocity).toEqual({ x: 1, y: 1 });
+        expect(detectCollision).toHaveBeenCalledTimes(1);
+    });
+
+    it('should detect collision with right edge', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return {} as CanvasRenderingContext2D;
+            },
+            width: 100,
+            height: 100,
+        } as HTMLCanvasElement;
+
+        const ball = new Ball(
+            mockCanvas,
+            { x: 90, y: 50 },
+            10,
+            { x: 1, y: 1 }
+        );
+        
+        // cast to any to access private method
+        const detectCollision = vi.spyOn(ball as any, 'detectCollision');
+
+        // Act
+        ball.move();
+        ball.move();
+
+        // Assert
+        // cast to any to access private porperty
+        const velocity = (ball as any).velocity;
+        const position = (ball as any).position;
+        expect(velocity).toEqual({ x: -1, y: 1 });
+        expect(position).toEqual({ x: 90, y: 52 });
+        expect(detectCollision).toHaveBeenCalledTimes(2);
+    });
+
+    it('should detect collision with left edge', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return {} as CanvasRenderingContext2D;
+            },
+            width: 100,
+            height: 100,
+        } as HTMLCanvasElement;
+
+        const ball = new Ball(
+            mockCanvas,
+            { x: 10, y: 50 },
+            10,
+            { x: -1, y: 1 }
+        );
+
+        // cast to any to access private method
+        const detectCollision = vi.spyOn(ball as any, 'detectCollision');
+
+        // Act
+        ball.move();
+        ball.move();
+
+        // Assert
+        // cast to any to access private porperty
+        const velocity = (ball as any).velocity;
+        const position = (ball as any).position;
+        expect(velocity).toEqual({ x: 1, y: 1 });
+        expect(position).toEqual({ x: 10, y: 52 });
+        expect(detectCollision).toHaveBeenCalledTimes(2);
+    });
+
+    it('should detect collision with bottom edge', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return {} as CanvasRenderingContext2D;
+            },
+            width: 100,
+            height: 100,
+        } as HTMLCanvasElement;
+
+        const ball = new Ball(
+            mockCanvas,
+            { x: 50, y: 90 },
+            10,
+            { x: 1, y: 1 }
+        );
+
+        // cast to any to access private method
+        const detectCollision = vi.spyOn(ball as any, 'detectCollision');
+
+        // Act
+        ball.move();
+        ball.move();
+
+        // Assert
+        // cast to any to access private properties
+        const velocity = (ball as any).velocity;
+        const position = (ball as any).position;
+        expect(velocity).toEqual({ x: 1, y: -1 });
+        expect(position).toEqual({ x: 52, y: 90 });
+        expect(detectCollision).toHaveBeenCalledTimes(2);
+    });
+
+    it('should detect collision with top edge', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return {} as CanvasRenderingContext2D;
+            },
+            width: 100,
+            height: 100,
+        } as HTMLCanvasElement;
+
+        const ball = new Ball(
+            mockCanvas,
+            { x: 50, y: 10 },
+            10,
+            { x: 1, y: -1 }
+        );
+
+        // cast to any to access private method
+        const detectCollision = vi.spyOn(ball as any, 'detectCollision');
+
+        // Act
+        ball.move();
+        ball.move();
+
+        // Assert
+        // cast to any to access private properties
+        const velocity = (ball as any).velocity;
+        const position = (ball as any).position;
+        expect(velocity).toEqual({ x: 1, y: 1 });
+        expect(position).toEqual({ x: 52, y: 10 });
+        expect(detectCollision).toHaveBeenCalledTimes(2);
     });
 });
 

@@ -11,7 +11,7 @@ export class Ball {
 
     constructor(
         private canvas: HTMLCanvasElement,
-        readonly position: Position,
+        private position: Position,
         private radius: number,
         private velocity: Velocity = { x: 0, y: 0 },
         private colour: string = 'rgba(29, 0, 255, 0.5)',
