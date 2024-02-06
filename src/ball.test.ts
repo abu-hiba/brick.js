@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Ball } from './ball';
 
 describe('Ball', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it('should create an instance', () => {
         // Arrange
         const mockCanvas = {
@@ -70,6 +74,30 @@ describe('Ball', () => {
         expect(fill).toHaveBeenCalledWith(Path2DMock());
         expect(fill).toHaveBeenCalledTimes(1);
         expect(restore).toHaveBeenCalledTimes(1);
+    });
+
+    it('should move the ball', () => {
+        // Arrange
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return {} as CanvasRenderingContext2D;
+            },
+            width: 100,
+            height: 100,
+        } as HTMLCanvasElement;
+
+        const ball = new Ball(
+            mockCanvas,
+            { x: 50, y: 50 },
+            10,
+            { x: 1, y: 1 }
+        );
+
+        // Act
+        ball.move();
+
+        // Assert
+        expect(ball.position).toEqual({ x: 51, y: 51 });
     });
 });
 
