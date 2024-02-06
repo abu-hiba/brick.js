@@ -10,6 +10,11 @@ pnpm install
 pnpm dev
 ```
 
+### Run unit tests
+```sh
+pnpm test
+```
+
 ## Build
 ### To build
 ```sh
