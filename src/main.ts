@@ -16,7 +16,7 @@ const getRand = (min: number, max: number): number => {
 };
 
 const createRandomBall = () => {
-    const radius = getRand(10, 40);
+    const radius = getRand(1, 10);
 
     const initialPosition = {
         x: getRand(radius, canvas.width - radius),
@@ -24,8 +24,8 @@ const createRandomBall = () => {
     };
 
     const velocity = {
-        x: getRand(1, 10),
-        y: getRand(1, 10),
+        x: getRand(1, 5),
+        y: getRand(1, 5),
     };
 
     return new Ball(
@@ -36,7 +36,7 @@ const createRandomBall = () => {
     );
 };
 
-const balls = [createRandomBall()];
+const balls: Ball[] = [];
 
 const loop = () => {
     requestAnimationFrame(loop);
@@ -65,7 +65,7 @@ removeButton.addEventListener('click', () => {
     balls.pop();
 });
 
-const root = document.querySelector('#app');
+const root = document.querySelector('#buttons');
 if (!root) throw new Error('App root not found');
 root.appendChild(addButton);
 root.appendChild(removeButton);
