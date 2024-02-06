@@ -30,5 +30,46 @@ describe('Ball', () => {
         // Assert
         expect(createBall).toThrowError('Could not get canvas context');
     });
+
+    it('should draw a ball', () => {
+        // Arrange
+        const context = {
+            save: () => { },
+            beginPath: () => { },
+            fillStyle: '',
+            fill: () => { },
+            restore: () => { },
+        } as CanvasRenderingContext2D;
+
+        const mockCanvas = {
+            getContext: (_contextId: string) => {
+                return context;
+            },
+        } as HTMLCanvasElement;
+
+        const save = vi.spyOn(context, 'save');
+        const beginPath = vi.spyOn(context, 'beginPath');
+        const fill = vi.spyOn(context, 'fill');
+        const restore = vi.spyOn(context, 'restore');
+
+        const arc = vi.fn();
+        const Path2DMock = vi.fn(() => ({ arc }));
+        vi.stubGlobal('Path2D', Path2DMock);
+
+        const ball = new Ball(mockCanvas, { x: 50, y: 50 }, 10);
+
+        // Act
+        ball.draw();
+
+        // Assert
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(Path2DMock).toHaveBeenCalledTimes(1);
+        expect(beginPath).toHaveBeenCalledTimes(1);
+        expect(arc).toHaveBeenCalledWith(50, 50, 10, 0, 2 * Math.PI);
+        expect(arc).toHaveBeenCalledTimes(1);
+        expect(fill).toHaveBeenCalledWith(Path2DMock());
+        expect(fill).toHaveBeenCalledTimes(1);
+        expect(restore).toHaveBeenCalledTimes(1);
+    });
 });
 
