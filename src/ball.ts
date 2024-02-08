@@ -1,10 +1,4 @@
-type Vector = {
-    x: number;
-    y: number;
-};
-
-type Position = Vector;
-type Velocity = Vector;
+import { Position, Velocity } from "./vectors";
 
 export class Ball {
     private ctx: CanvasRenderingContext2D;
