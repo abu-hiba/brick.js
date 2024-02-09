@@ -1,4 +1,5 @@
 import { Ball } from './ball';
+import { Paddle } from './paddle';
 import './style.css'
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
@@ -37,6 +38,7 @@ const createRandomBall = () => {
 };
 
 const balls: Ball[] = [];
+const paddle = new Paddle(canvas, { x: 0, y: canvas.height - 10 });
 
 const loop = () => {
     requestAnimationFrame(loop);
@@ -45,6 +47,7 @@ const loop = () => {
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
+    paddle.draw();
     balls.forEach((ball) => {
         ball.draw();
         ball.move();
