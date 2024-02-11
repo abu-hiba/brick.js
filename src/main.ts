@@ -2,6 +2,9 @@ import { Ball } from './ball';
 import { Paddle } from './paddle';
 import './style.css'
 
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
     throw new Error('Canvas element not available');
@@ -39,6 +42,7 @@ const createRandomBall = () => {
 
 const balls: Ball[] = [];
 const paddle = new Paddle(canvas, { x: 0, y: canvas.height - 10 });
+const paddleVelocityX = 5;
 
 const loop = () => {
     requestAnimationFrame(loop);
@@ -48,11 +52,43 @@ const loop = () => {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     paddle.draw();
+    paddle.move();
     balls.forEach((ball) => {
         ball.draw();
         ball.move();
     });
 };
+
+// keep track of pressed keys to avoid stopping
+// the paddle when both keys are pressed and one is released
+const pressedKeys = new Set<string>();
+
+document.addEventListener('keydown', (event) => {
+    let x = 0;
+    if (event.key === ARROW_LEFT) {
+        x = -paddleVelocityX;
+    } else if (event.key === ARROW_RIGHT) {
+        x = paddleVelocityX;
+    }
+
+    paddle.setVelocity({ x, y: 0 });
+    pressedKeys.add(event.key);
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === ARROW_LEFT || event.key === ARROW_RIGHT) {
+        pressedKeys.delete(event.key);
+
+        let x = 0;
+        if (pressedKeys.has(ARROW_LEFT)) {
+            x = -paddleVelocityX;
+        } else if (pressedKeys.has(ARROW_RIGHT)) {
+            x = paddleVelocityX;
+        }
+
+        paddle.setVelocity({ x, y: 0 });
+    }
+});
 
 loop();
 
