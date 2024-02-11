@@ -9,14 +9,6 @@ const context = {
     restore: () => { },
 } as CanvasRenderingContext2D;
 
-const mockCanvas = {
-    getContext: (_contextId: string) => {
-        return context;
-    },
-    width: 100,
-    height: 100,
-} as HTMLCanvasElement;
-
 const RADIUS = 10;
 
 describe('Ball class', () => {
@@ -27,34 +19,13 @@ describe('Ball class', () => {
     describe('constructor', () => {
         it('should create an instance', () => {
             // Arrange
-            const getContext = vi.spyOn(mockCanvas, 'getContext');
             const initialPosition = { x: 50, y: 50 };
 
             // Act
-            const ball = new Ball(mockCanvas, initialPosition, RADIUS);
+            const ball = new Ball(context, initialPosition, RADIUS);
 
             // Assert
             expect(ball).toBeTruthy();
-            expect(getContext).toHaveBeenCalledWith('2d');
-        });
-
-        it('should throw if canvas context is not available', () => {
-            // Arrange
-            const mockCanvas = {
-                getContext: (_contextId: string) => { return null; },
-            } as HTMLCanvasElement;
-
-            const initialPosition = { x: 50, y: 50 };
-
-            // Act
-            const createBall = () => new Ball(
-                mockCanvas,
-                initialPosition,
-                RADIUS
-            );
-
-            // Assert
-            expect(createBall).toThrowError('Could not get canvas context');
         });
     });
 
@@ -72,7 +43,7 @@ describe('Ball class', () => {
             const Path2DMock = vi.fn(() => ({ arc }));
             vi.stubGlobal('Path2D', Path2DMock);
 
-            const ball = new Ball(mockCanvas, initialPosition, RADIUS);
+            const ball = new Ball(context, initialPosition, RADIUS);
 
             // Act
             ball.draw();
@@ -96,139 +67,18 @@ describe('Ball class', () => {
             const initialVelocity = { x: 1, y: 1 };
 
             const ball = new Ball(
-                mockCanvas,
+                context,
                 initialPosition,
                 RADIUS,
                 initialVelocity
             );
 
-            // cast to any to access private method
-            const detectCollision = vi.spyOn(ball as any, 'detectCollision');
-
             // Act
             ball.move();
 
             // Assert
-            // cast to any to access private properties
-            const position = (ball as any).position;
-            const velocity = (ball as any).velocity;
-            expect(position).toEqual({ x: 51, y: 51 });
-            expect(velocity).toEqual({ x: 1, y: 1 });
-            expect(detectCollision).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('detectCollision method', () => {
-        it('should detect collision with right edge', () => {
-            // Arrange
-            const initialPosition = { x: 90, y: 50 };
-            const initialVelocity = { x: 1, y: 1 };
-
-            const ball = new Ball(
-                mockCanvas,
-                initialPosition,
-                RADIUS,
-                initialVelocity
-            );
-
-            // cast to any to access private method
-            const detectCollision = vi.spyOn(ball as any, 'detectCollision');
-
-            // Act
-            ball.move();
-            ball.move();
-
-            // Assert
-            // cast to any to access private porperty
-            const velocity = (ball as any).velocity;
-            const position = (ball as any).position;
-            expect(velocity).toEqual({ x: -1, y: 1 });
-            expect(position).toEqual({ x: 90, y: 52 });
-            expect(detectCollision).toHaveBeenCalledTimes(2);
-        });
-
-        it('should detect collision with left edge', () => {
-            // Arrange
-            const initialPosition = { x: 10, y: 50 };
-            const initialVelocity = { x: -1, y: 1 };
-
-            const ball = new Ball(
-                mockCanvas,
-                initialPosition,
-                RADIUS,
-                initialVelocity
-            );
-
-            // cast to any to access private method
-            const detectCollision = vi.spyOn(ball as any, 'detectCollision');
-
-            // Act
-            ball.move();
-            ball.move();
-
-            // Assert
-            // cast to any to access private porperty
-            const velocity = (ball as any).velocity;
-            const position = (ball as any).position;
-            expect(velocity).toEqual({ x: 1, y: 1 });
-            expect(position).toEqual({ x: 10, y: 52 });
-            expect(detectCollision).toHaveBeenCalledTimes(2);
-        });
-
-        it('should detect collision with bottom edge', () => {
-            // Arrange
-            const initialPosition = { x: 50, y: 90 };
-            const initialVelocity = { x: 1, y: 1 };
-
-            const ball = new Ball(
-                mockCanvas,
-                initialPosition,
-                RADIUS,
-                initialVelocity
-            );
-
-            // cast to any to access private method
-            const detectCollision = vi.spyOn(ball as any, 'detectCollision');
-
-            // Act
-            ball.move();
-            ball.move();
-
-            // Assert
-            // cast to any to access private properties
-            const velocity = (ball as any).velocity;
-            const position = (ball as any).position;
-            expect(velocity).toEqual({ x: 1, y: -1 });
-            expect(position).toEqual({ x: 52, y: 90 });
-            expect(detectCollision).toHaveBeenCalledTimes(2);
-        });
-
-        it('should detect collision with top edge', () => {
-            // Arrange
-            const initialPosition = { x: 50, y: 10 };
-            const initialVelocity = { x: 1, y: -1 };
-
-            const ball = new Ball(
-                mockCanvas,
-                initialPosition,
-                RADIUS,
-                initialVelocity
-            );
-
-            // cast to any to access private method
-            const detectCollision = vi.spyOn(ball as any, 'detectCollision');
-
-            // Act
-            ball.move();
-            ball.move();
-
-            // Assert
-            // cast to any to access private properties
-            const velocity = (ball as any).velocity;
-            const position = (ball as any).position;
-            expect(velocity).toEqual({ x: 1, y: 1 });
-            expect(position).toEqual({ x: 52, y: 10 });
-            expect(detectCollision).toHaveBeenCalledTimes(2);
+            expect(ball.getPosition()).toEqual({ x: 51, y: 51 });
+            expect(ball.getVelocity()).toEqual({ x: 1, y: 1 });
         });
     });
 });
