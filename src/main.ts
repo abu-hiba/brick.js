@@ -33,14 +33,14 @@ const createRandomBall = () => {
     };
 
     return new Ball(
-        canvas,
+        context,
         initialPosition,
         radius,
         velocity,
     );
 };
 
-const paddle = new Paddle(canvas, { x: (canvas.width / 2) - 14, y: canvas.height - 10 })
+const paddle = new Paddle(context, { x: (canvas.width / 2) - 14, y: canvas.height - 10 })
 const components: (Ball | Paddle)[] = [paddle];
 const paddleVelocityX = 5;
 
@@ -104,8 +104,7 @@ const loop = () => {
         detectCollisions(component);
         component.draw();
         component.move();
-    });
-};
+    }); };
 
 // keep track of pressed keys to avoid stopping
 // the paddle when both keys are pressed and one is released
