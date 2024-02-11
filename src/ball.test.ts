@@ -77,11 +77,8 @@ describe('Ball class', () => {
             ball.move();
 
             // Assert
-            // cast to any to access private properties
-            const position = (ball as any).position;
-            const velocity = (ball as any).velocity;
-            expect(position).toEqual({ x: 51, y: 51 });
-            expect(velocity).toEqual({ x: 1, y: 1 });
+            expect(ball.getPosition()).toEqual({ x: 51, y: 51 });
+            expect(ball.getVelocity()).toEqual({ x: 1, y: 1 });
         });
     });
 });
