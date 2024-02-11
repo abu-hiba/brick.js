@@ -27,28 +27,8 @@ export class Ball {
     };
 
     readonly move = () => {
-        this.detectCollision();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-    };
-
-    private detectCollision = () => {
-        const collidesWithRightEdge =
-            this.position.x > this.canvas.width - this.radius;
-        const collidesWithLeftEdge =
-            this.position.x < this.radius;
-        const collidesWithBottomEdge =
-            this.position.y > this.canvas.height - this.radius;
-        const collidesWithTopEdge =
-            this.position.y < this.radius;
-
-        if (collidesWithRightEdge || collidesWithLeftEdge) {
-            this.velocity.x = -this.velocity.x;
-        }
-
-        if (collidesWithBottomEdge || collidesWithTopEdge) {
-            this.velocity.y = -this.velocity.y;
-        }
     };
 
     readonly getPosition = () => this.position;

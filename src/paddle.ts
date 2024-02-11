@@ -2,6 +2,7 @@ import { Position, Velocity } from "./vectors";
 
 export class Paddle {
     private ctx: CanvasRenderingContext2D;
+    private canMove = true;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -29,11 +30,8 @@ export class Paddle {
     };
 
     readonly move = () => {
-        const collidesWithRightEdge =
-            this.position.x + this.velocity.x > this.canvas.width - this.width;
-        const collidesWithLeftEdge = this.position.x + this.velocity.x < 0;
-
-        if (collidesWithRightEdge || collidesWithLeftEdge) {
+        if (!this.canMove) {
+            this.canMove = true;
             return;
         }
 
@@ -51,6 +49,10 @@ export class Paddle {
 
     readonly setVelocity = (velocity: Velocity) => {
         this.velocity = velocity;
+    };
+
+    readonly setCanMove = (canMove: boolean) => {
+        this.canMove = canMove;
     };
 };
 

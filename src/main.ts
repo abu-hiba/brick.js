@@ -44,29 +44,52 @@ const paddle = new Paddle(canvas, { x: (canvas.width / 2) - 14, y: canvas.height
 const components: (Ball | Paddle)[] = [paddle];
 const paddleVelocityX = 5;
 
-const detectCollisions = (ball: Ball) => {
-    const ballPosition = ball.getPosition();
-    const ballRadius = ball.getRadius();
-    const ballVelocity = ball.getVelocity();
+const detectCollisions = (component: Ball | Paddle) => {
+    if (component instanceof Ball) {
+        const ball = component;
+        const ballPosition = ball.getPosition();
+        const ballRadius = ball.getRadius();
+        const ballVelocity = ball.getVelocity();
 
-    const paddlePosition = paddle.getPosition();
-    const paddleWidth = paddle.getWidth();
-    const paddleHeight = paddle.getHeight();
+        const paddlePosition = paddle.getPosition();
+        const paddleWidth = paddle.getWidth();
+        const paddleHeight = paddle.getHeight();
 
-    const collidesWithPaddle =
-        ballPosition.x + ballRadius > paddlePosition.x &&
-        ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
-        ballPosition.y + ballRadius > paddlePosition.y &&
-        ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
+        const collidesWithPaddle =
+            ballPosition.x + ballRadius > paddlePosition.x &&
+                ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
+                ballPosition.y + ballRadius > paddlePosition.y &&
+                ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
 
-    const collidesWithBottomEdge = ballPosition.y > canvas.height - ballRadius;
+        const collidesWithRightEdge = ballPosition.x > canvas.width - ballRadius;
+        const collidesWithLeftEdge = ballPosition.x < ballRadius;
+        const collidesWithTopEdge = ballPosition.y < ballRadius;
+        const collidesWithBottomEdge = ballPosition.y > canvas.height - ballRadius;
 
-    if (collidesWithPaddle) {
-        ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
-    }
+        if (collidesWithRightEdge || collidesWithLeftEdge) {
+            ball.setVelocity({ x: -ballVelocity.x, y: ballVelocity.y });
+        }
 
-    if (collidesWithBottomEdge) {
-        components.splice(components.indexOf(ball), 1);
+        if (collidesWithPaddle || collidesWithTopEdge) {
+            ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
+        }
+
+        if (collidesWithBottomEdge) {
+            components.splice(components.indexOf(ball), 1);
+        }
+    } else if (component instanceof Paddle) {
+        const paddle = component;
+        const paddlePosition = paddle.getPosition();
+        const paddleWidth = paddle.getWidth();
+        const paddleVelocity = paddle.getVelocity();
+
+        const collidesWithRightEdge =
+            paddlePosition.x + paddleVelocity.x > canvas.width - paddleWidth;
+        const collidesWithLeftEdge = paddlePosition.x + paddleVelocity.x < 0;
+
+        if (collidesWithRightEdge || collidesWithLeftEdge) {
+            paddle.setCanMove(false);
+        }
     }
 };
 
@@ -78,9 +101,7 @@ const loop = () => {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     components.forEach((component) => {
-        if (component instanceof Ball) {
-            detectCollisions(component);
-        }
+        detectCollisions(component);
         component.draw();
         component.move();
     });
