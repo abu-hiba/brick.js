@@ -6,8 +6,8 @@ export class Paddle {
     constructor(
         private canvas: HTMLCanvasElement,
         private position: Position,
-        private width: number = 20,
-        private height: number = 5,
+        private width: number = 28,
+        private height: number = 2,
         private velocity: Velocity = { x: 0, y: 0 },
         private color: string = 'black',
     ) {
@@ -28,10 +28,6 @@ export class Paddle {
         this.ctx.restore();
     };
 
-    readonly setVelocity = (velocity: Velocity) => {
-        this.velocity = velocity;
-    };
-
     readonly move = () => {
         const collidesWithRightEdge =
             this.position.x + this.velocity.x > this.canvas.width - this.width;
@@ -44,5 +40,17 @@ export class Paddle {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     };
-}
+
+    readonly getPosition = () => this.position;
+
+    readonly getWidth = () => this.width;
+
+    readonly getHeight = () => this.height;
+
+    readonly getVelocity = () => this.velocity;
+
+    readonly setVelocity = (velocity: Velocity) => {
+        this.velocity = velocity;
+    };
+};
 

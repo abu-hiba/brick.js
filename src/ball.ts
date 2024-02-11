@@ -50,5 +50,15 @@ export class Ball {
             this.velocity.y = -this.velocity.y;
         }
     };
+
+    readonly getPosition = () => this.position;
+
+    readonly getRadius = () => this.radius;
+
+    readonly getVelocity = () => this.velocity;
+
+    readonly setVelocity = (velocity: Velocity) => {
+        this.velocity = velocity;
+    };
 };
 

@@ -20,7 +20,7 @@ const getRand = (min: number, max: number): number => {
 };
 
 const createRandomBall = () => {
-    const radius = getRand(1, 10);
+    const radius = getRand(3, 3);
 
     const initialPosition = {
         x: getRand(radius, canvas.width - radius),
@@ -28,8 +28,8 @@ const createRandomBall = () => {
     };
 
     const velocity = {
-        x: getRand(1, 5),
-        y: getRand(1, 5),
+        x: getRand(1, 1),
+        y: getRand(1, 1),
     };
 
     return new Ball(
@@ -40,9 +40,35 @@ const createRandomBall = () => {
     );
 };
 
-const balls: Ball[] = [];
-const paddle = new Paddle(canvas, { x: 0, y: canvas.height - 10 });
+const paddle = new Paddle(canvas, { x: (canvas.width / 2) - 14, y: canvas.height - 10 })
+const components: (Ball | Paddle)[] = [paddle];
 const paddleVelocityX = 5;
+
+const detectCollisions = (ball: Ball) => {
+    const ballPosition = ball.getPosition();
+    const ballRadius = ball.getRadius();
+    const ballVelocity = ball.getVelocity();
+
+    const paddlePosition = paddle.getPosition();
+    const paddleWidth = paddle.getWidth();
+    const paddleHeight = paddle.getHeight();
+
+    const collidesWithPaddle =
+        ballPosition.x + ballRadius > paddlePosition.x &&
+        ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
+        ballPosition.y + ballRadius > paddlePosition.y &&
+        ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
+
+    const collidesWithBottomEdge = ballPosition.y > canvas.height - ballRadius;
+
+    if (collidesWithPaddle) {
+        ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
+    }
+
+    if (collidesWithBottomEdge) {
+        components.splice(components.indexOf(ball), 1);
+    }
+};
 
 const loop = () => {
     requestAnimationFrame(loop);
@@ -51,11 +77,12 @@ const loop = () => {
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    paddle.draw();
-    paddle.move();
-    balls.forEach((ball) => {
-        ball.draw();
-        ball.move();
+    components.forEach((component) => {
+        if (component instanceof Ball) {
+            detectCollisions(component);
+        }
+        component.draw();
+        component.move();
     });
 };
 
@@ -95,13 +122,13 @@ loop();
 const addButton = document.createElement('button');
 addButton.textContent = 'Add ball';
 addButton.addEventListener('click', () => {
-    balls.push(createRandomBall());
+    components.push(createRandomBall());
 });
 
 const removeButton = document.createElement('button');
 removeButton.textContent = 'Remove ball';
 removeButton.addEventListener('click', () => {
-    balls.pop();
+    components.pop();
 });
 
 const root = document.querySelector('#buttons');
