@@ -1,25 +1,27 @@
+import { CanvasEntity, RectangleDimensions } from "./canvasEntity";
 import { Position, Velocity } from "./vectors";
 
-export class Paddle {
+export class Paddle extends CanvasEntity<RectangleDimensions> {
     private canMove = true;
 
     constructor(
-        private ctx: CanvasRenderingContext2D,
-        private position: Position,
-        private width: number = 28,
-        private height: number = 2,
-        private velocity: Velocity = { x: 0, y: 0 },
-        private color: string = 'black',
-    ) { };
+        ctx: CanvasRenderingContext2D,
+        position: Position,
+        dimensions: RectangleDimensions = { width: 28, height: 2 },
+        velocity: Velocity = { x: 0, y: 0 },
+        colour: string = 'black',
+    ) {
+        super(ctx, position, velocity, dimensions, colour);
+    };
 
     readonly draw = () => {
         this.ctx.save();
-        this.ctx.fillStyle = this.color;
+        this.ctx.fillStyle = this.colour;
         this.ctx.fillRect(
             this.position.x,
             this.position.y,
-            this.width,
-            this.height
+            this.dimensions.width, 
+            this.dimensions.height,
         );
         this.ctx.restore();
     };
@@ -32,18 +34,6 @@ export class Paddle {
 
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-    };
-
-    readonly getPosition = () => this.position;
-
-    readonly getWidth = () => this.width;
-
-    readonly getHeight = () => this.height;
-
-    readonly getVelocity = () => this.velocity;
-
-    readonly setVelocity = (velocity: Velocity) => {
-        this.velocity = velocity;
     };
 
     readonly setCanMove = (canMove: boolean) => {
