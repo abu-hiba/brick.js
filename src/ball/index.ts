@@ -1,5 +1,5 @@
-import { CanvasEntity, CircleDimensions } from "./canvasEntity";
-import { Position, Velocity } from "./vectors";
+import { CanvasEntity, CircleDimensions } from "../canvasEntity";
+import { Position, Velocity } from "../vectors";
 
 export class Ball extends CanvasEntity<CircleDimensions> {
     constructor(
