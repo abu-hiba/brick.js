@@ -28,8 +28,8 @@ const createRandomBall = () => {
     };
 
     const velocity = {
-        x: getRand(1, 1),
-        y: getRand(1, 1),
+        x: getRand(2, 2),
+        y: getRand(2, 2),
     };
 
     return new Ball(
@@ -57,9 +57,9 @@ const detectCollisions = (component: Ball | Paddle) => {
 
         const collidesWithPaddle =
             ballPosition.x + ballRadius > paddlePosition.x &&
-                ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
-                ballPosition.y + ballRadius > paddlePosition.y &&
-                ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
+            ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
+            ballPosition.y + ballRadius > paddlePosition.y &&
+            ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
 
         const collidesWithRightEdge = ballPosition.x > canvas.width - ballRadius;
         const collidesWithLeftEdge = ballPosition.x < ballRadius;
@@ -104,26 +104,36 @@ const loop = () => {
         detectCollisions(component);
         component.draw();
         component.move();
-    }); };
+    });
+};
 
 // keep track of pressed keys to avoid stopping
 // the paddle when both keys are pressed and one is released
 const pressedKeys = new Set<string>();
 
-document.addEventListener('keydown', (event) => {
+const handleKeyDown = (event: KeyboardEvent) => {
     let x = 0;
     if (event.key === ARROW_LEFT) {
         x = -paddleVelocityX;
+        leftButton.setAttribute('class', 'arrow-key pressed');
     } else if (event.key === ARROW_RIGHT) {
         x = paddleVelocityX;
+        rightButton.setAttribute('class', 'arrow-key pressed');
     }
 
     paddle.setVelocity({ x, y: 0 });
     pressedKeys.add(event.key);
-});
+};
 
-document.addEventListener('keyup', (event) => {
+const handleKeyUp = (event: KeyboardEvent) => {
     if (event.key === ARROW_LEFT || event.key === ARROW_RIGHT) {
+        if (event.key === ARROW_LEFT) {
+            leftButton.setAttribute('class', 'arrow-key');
+        }
+        if (event.key === ARROW_RIGHT) {
+            rightButton.setAttribute('class', 'arrow-key');
+        }
+
         pressedKeys.delete(event.key);
 
         let x = 0;
@@ -135,9 +145,40 @@ document.addEventListener('keyup', (event) => {
 
         paddle.setVelocity({ x, y: 0 });
     }
-});
+};
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
 
 loop();
+
+type Direction = typeof ARROW_LEFT | typeof ARROW_RIGHT;
+const handleButtonDown = (direction: Direction) => (_event: MouseEvent | TouchEvent) => {
+    document.dispatchEvent(new KeyboardEvent('keydown', { 'key': direction }));
+};
+
+const handleButtonUp = (direction: Direction) => (_event: MouseEvent | TouchEvent) => {
+    document.dispatchEvent(new KeyboardEvent('keyup', { 'key': direction }));
+};
+
+const controls = document.createElement('div');
+controls.setAttribute('id', 'controls');
+
+const leftButton = document.createElement('div');
+leftButton.setAttribute('class', 'arrow-key');
+leftButton.textContent = '←';
+leftButton.addEventListener('touchstart', handleButtonDown(ARROW_LEFT));
+leftButton.addEventListener('mousedown', handleButtonDown(ARROW_LEFT));
+leftButton.addEventListener('touchend', handleButtonUp(ARROW_LEFT));
+leftButton.addEventListener('mouseup', handleButtonUp(ARROW_LEFT));
+
+const rightButton = document.createElement('div');
+rightButton.setAttribute('class', 'arrow-key');
+rightButton.textContent = '→';
+rightButton.addEventListener('touchstart', handleButtonDown(ARROW_RIGHT));
+rightButton.addEventListener('mousedown', handleButtonDown(ARROW_RIGHT));
+rightButton.addEventListener('touchend', handleButtonUp(ARROW_RIGHT));
+rightButton.addEventListener('mouseup', handleButtonUp(ARROW_RIGHT));
 
 const addButton = document.createElement('button');
 addButton.textContent = 'Add ball';
@@ -151,8 +192,14 @@ removeButton.addEventListener('click', () => {
     components.pop();
 });
 
-const root = document.querySelector('#buttons');
-if (!root) throw new Error('App root not found');
-root.appendChild(addButton);
-root.appendChild(removeButton);
+const app = document.querySelector('#app');
+if (!app) throw new Error('App root not found');
+app.appendChild(controls);
+controls.appendChild(leftButton);
+controls.appendChild(rightButton);
+
+const buttons = document.querySelector('#buttons');
+if (!buttons) throw new Error('Buttons element not found');
+buttons.appendChild(addButton);
+buttons.appendChild(removeButton);
 
