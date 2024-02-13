@@ -35,7 +35,7 @@ const createRandomBall = () => {
     return new Ball(
         context,
         initialPosition,
-        radius,
+        { radius },
         velocity,
     );
 };
@@ -48,12 +48,12 @@ const detectCollisions = (component: Ball | Paddle) => {
     if (component instanceof Ball) {
         const ball = component;
         const ballPosition = ball.getPosition();
-        const ballRadius = ball.getRadius();
+        const ballRadius = ball.getDimensions().radius;
         const ballVelocity = ball.getVelocity();
 
         const paddlePosition = paddle.getPosition();
-        const paddleWidth = paddle.getWidth();
-        const paddleHeight = paddle.getHeight();
+        const paddleWidth = paddle.getDimensions().width;
+        const paddleHeight = paddle.getDimensions().height;
 
         const collidesWithPaddle =
             ballPosition.x + ballRadius > paddlePosition.x &&
@@ -80,7 +80,7 @@ const detectCollisions = (component: Ball | Paddle) => {
     } else if (component instanceof Paddle) {
         const paddle = component;
         const paddlePosition = paddle.getPosition();
-        const paddleWidth = paddle.getWidth();
+        const paddleWidth = paddle.getDimensions().width;
         const paddleVelocity = paddle.getVelocity();
 
         const collidesWithRightEdge =
