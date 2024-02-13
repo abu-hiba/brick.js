@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Ball } from './ball';
+import { Ball } from '.';
 
 const context = {
     save: () => { },

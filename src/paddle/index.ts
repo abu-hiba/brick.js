@@ -1,5 +1,5 @@
-import { CanvasEntity, RectangleDimensions } from "./canvasEntity";
-import { Position, Velocity } from "./vectors";
+import { CanvasEntity, RectangleDimensions } from "../canvasEntity";
+import { Position, Velocity } from "../vectors";
 
 export class Paddle extends CanvasEntity<RectangleDimensions> {
     private canMove = true;
