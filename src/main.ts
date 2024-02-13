@@ -52,8 +52,7 @@ const detectCollisions = (component: Ball | Paddle) => {
         const ballVelocity = ball.getVelocity();
 
         const paddlePosition = paddle.getPosition();
-        const paddleWidth = paddle.getDimensions().width;
-        const paddleHeight = paddle.getDimensions().height;
+        const { width: paddleWidth, height: paddleHeight } = paddle.getDimensions();
 
         const collidesWithPaddle =
             ballPosition.x + ballRadius > paddlePosition.x &&
