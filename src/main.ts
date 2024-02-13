@@ -15,33 +15,13 @@ if (!context) {
     throw new Error('Cannot get canvas context');
 }
 
-const getRand = (min: number, max: number): number => {
-    return Math.random() * (max - min) + min;
-};
-
-const createRandomBall = () => {
-    const radius = getRand(3, 3);
-
-    const initialPosition = {
-        x: getRand(radius, canvas.width - radius),
-        y: getRand(radius, canvas.height - radius),
-    };
-
-    const velocity = {
-        x: getRand(2, 2),
-        y: getRand(2, 2),
-    };
-
-    return new Ball(
-        context,
-        initialPosition,
-        { radius },
-        velocity,
-    );
-};
+let gameStarted = false;
 
 const paddle = new Paddle(context, { x: (canvas.width / 2) - 14, y: canvas.height - 10 })
-const components: (Ball | Paddle)[] = [paddle];
+const paddlePosition = paddle.getPosition();
+const radius = 3;
+const ball = new Ball(context, { x: paddlePosition.x + radius + 1, y: paddlePosition.y - radius - 1 }, { radius }, { x: 0, y: 0 });
+const components: (Ball | Paddle)[] = [paddle, ball];
 const paddleVelocityX = 5;
 
 const detectCollisions = (component: Ball | Paddle) => {
@@ -113,9 +93,19 @@ const pressedKeys = new Set<string>();
 const handleKeyDown = (event: KeyboardEvent) => {
     let x = 0;
     if (event.key === ARROW_LEFT) {
+        if (gameStarted === false) {
+            gameStarted = true;
+            ball.setVelocity({ x: -2, y: -2 });
+        }
+
         x = -paddleVelocityX;
         leftButton.setAttribute('class', 'arrow-key pressed');
     } else if (event.key === ARROW_RIGHT) {
+        if (gameStarted === false) {
+            gameStarted = true;
+            ball.setVelocity({ x: 2, y: -2 });
+        }
+
         x = paddleVelocityX;
         rightButton.setAttribute('class', 'arrow-key pressed');
     }
@@ -179,26 +169,9 @@ rightButton.addEventListener('mousedown', handleButtonDown(ARROW_RIGHT));
 rightButton.addEventListener('touchend', handleButtonUp(ARROW_RIGHT));
 rightButton.addEventListener('mouseup', handleButtonUp(ARROW_RIGHT));
 
-const addButton = document.createElement('button');
-addButton.textContent = 'Add ball';
-addButton.addEventListener('click', () => {
-    components.push(createRandomBall());
-});
-
-const removeButton = document.createElement('button');
-removeButton.textContent = 'Remove ball';
-removeButton.addEventListener('click', () => {
-    components.pop();
-});
-
 const app = document.querySelector('#app');
 if (!app) throw new Error('App root not found');
 app.appendChild(controls);
 controls.appendChild(leftButton);
 controls.appendChild(rightButton);
-
-const buttons = document.querySelector('#buttons');
-if (!buttons) throw new Error('Buttons element not found');
-buttons.appendChild(addButton);
-buttons.appendChild(removeButton);
 
