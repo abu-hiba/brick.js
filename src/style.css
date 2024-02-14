@@ -1,9 +1,14 @@
 html, body {
     margin: 0;
     height: 100%;
-    overflow: hidden;
     user-select: none;
-    touch-action: pan-x pan-y;
+}
+
+@media (max-width: 1250px) {
+    html, body {
+        overflow: hidden;
+        touch-action: pan-x pan-y;
+    }
 }
 
 #app {
@@ -19,6 +24,11 @@ html, body {
     width: 80%;
 }
 
+#score-board {
+    border: 1px solid black;
+    width: 80%;
+}
+
 #controls {
     display: flex;
     justify-content: center;
@@ -30,6 +40,7 @@ html, body {
     width: 100px;
     height: 100px;
     background-color: #f0f0f0;
+    font-size: 3rem;
     border: 1px solid black;
     display: flex;
     justify-content: center;

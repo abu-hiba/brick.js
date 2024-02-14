@@ -15,13 +15,43 @@ if (!context) {
     throw new Error('Cannot get canvas context');
 }
 
-let gameStarted = false;
+const scoreBoard = document.querySelector<HTMLCanvasElement>('#score-board');
+if (!scoreBoard) {
+    throw new Error('Score board element not available');
+}
+scoreBoard.setAttribute('height', '20');
 
-const paddle = new Paddle(context, { x: (canvas.width / 2) - 14, y: canvas.height - 10 })
-const paddlePosition = paddle.getPosition();
+const scoreBoardContext = scoreBoard.getContext('2d');
+if (!scoreBoardContext) {
+    throw new Error('Cannot get score board context');
+}
+
+const scoreBoardBall = new Ball(scoreBoardContext, { x: 10, y: 10 }, { radius: 3 });
+
+let isBallMoving = false;
+const initialNumberOfBalls = 3;
+
 const radius = 3;
-const ball = new Ball(context, { x: paddlePosition.x + radius + 1, y: paddlePosition.y - radius - 1 }, { radius }, { x: 0, y: 0 });
-const components: (Ball | Paddle)[] = [paddle, ball];
+
+const initialPaddlePosition = { x: (canvas.width / 2) - 14, y: canvas.height - 10 };
+const paddle = new Paddle(context, initialPaddlePosition);
+const paddlePosition = paddle.getPosition();
+
+const createBall = () => {
+    return new Ball(
+        context,
+        {
+            x: paddlePosition.x + radius + 1,
+            y: paddlePosition.y - radius - 1
+        },
+        { radius },
+        { x: 0, y: 0 }
+    );
+};
+
+const balls = Array.from({ length: initialNumberOfBalls }, createBall);
+
+const components: (Ball | Paddle)[] = [paddle, balls[balls.length-1]];
 const paddleVelocityX = 5;
 
 const detectCollisions = (component: Ball | Paddle) => {
@@ -55,6 +85,13 @@ const detectCollisions = (component: Ball | Paddle) => {
 
         if (collidesWithBottomEdge) {
             components.splice(components.indexOf(ball), 1);
+            balls.pop();
+            balls[balls.length-1].setPosition({
+                x: paddlePosition.x + radius + 1,
+                y: paddlePosition.y - radius - 1
+            });
+            components.push(balls[balls.length-1]);
+            isBallMoving = false;
         }
     } else if (component instanceof Paddle) {
         const paddle = component;
@@ -79,6 +116,14 @@ const loop = () => {
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
+    scoreBoardContext.fillStyle = 'white';
+    scoreBoardContext.beginPath();
+    scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
+    scoreBoardContext.fillStyle = 'black';
+    scoreBoardContext.font = '1rem sans-serif';
+    scoreBoardBall.draw();
+    scoreBoardContext.fillText(balls.length.toString(), 20, 15);
+
     components.forEach((component) => {
         detectCollisions(component);
         component.draw();
@@ -93,17 +138,17 @@ const pressedKeys = new Set<string>();
 const handleKeyDown = (event: KeyboardEvent) => {
     let x = 0;
     if (event.key === ARROW_LEFT) {
-        if (gameStarted === false) {
-            gameStarted = true;
-            ball.setVelocity({ x: -2, y: -2 });
+        if (isBallMoving === false) {
+            isBallMoving = true;
+            balls[balls.length-1].setVelocity({ x: -2, y: -2 });
         }
 
         x = -paddleVelocityX;
         leftButton.setAttribute('class', 'arrow-key pressed');
     } else if (event.key === ARROW_RIGHT) {
-        if (gameStarted === false) {
-            gameStarted = true;
-            ball.setVelocity({ x: 2, y: -2 });
+        if (isBallMoving === false) {
+            isBallMoving = true;
+            balls[balls.length-1].setVelocity({ x: 2, y: -2 });
         }
 
         x = paddleVelocityX;
@@ -155,7 +200,7 @@ controls.setAttribute('id', 'controls');
 
 const leftButton = document.createElement('div');
 leftButton.setAttribute('class', 'arrow-key');
-leftButton.textContent = '←';
+leftButton.textContent = '⇦';
 leftButton.addEventListener('touchstart', handleButtonDown(ARROW_LEFT));
 leftButton.addEventListener('mousedown', handleButtonDown(ARROW_LEFT));
 leftButton.addEventListener('touchend', handleButtonUp(ARROW_LEFT));
@@ -163,7 +208,7 @@ leftButton.addEventListener('mouseup', handleButtonUp(ARROW_LEFT));
 
 const rightButton = document.createElement('div');
 rightButton.setAttribute('class', 'arrow-key');
-rightButton.textContent = '→';
+rightButton.textContent = '⇨';
 rightButton.addEventListener('touchstart', handleButtonDown(ARROW_RIGHT));
 rightButton.addEventListener('mousedown', handleButtonDown(ARROW_RIGHT));
 rightButton.addEventListener('touchend', handleButtonUp(ARROW_RIGHT));

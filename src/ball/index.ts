@@ -18,7 +18,13 @@ export class Ball extends CanvasEntity<CircleDimensions> {
         const path = new Path2D();
         this.ctx.beginPath();
         this.ctx.fillStyle = this.colour;
-        path.arc(this.position.x, this.position.y, this.dimensions.radius, 0, 2 * Math.PI);
+        path.arc(
+            this.position.x,
+            this.position.y,
+            this.dimensions.radius,
+            0,
+            2 * Math.PI
+        );
         this.ctx.fill(path);
         this.ctx.restore();
     };
@@ -26,6 +32,10 @@ export class Ball extends CanvasEntity<CircleDimensions> {
     readonly move = () => {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+    };
+
+    readonly setPosition = (position: Position) => {
+        this.position = position;
     };
 };
 
