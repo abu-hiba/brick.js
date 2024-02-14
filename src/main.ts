@@ -1,9 +1,14 @@
 import { Ball } from './ball';
+import { Brick } from './brick';
+import { MovableCanvasEntity } from './canvasEntity';
 import { Paddle } from './paddle';
 import './style.css'
 
 const ARROW_LEFT = 'ArrowLeft';
 const ARROW_RIGHT = 'ArrowRight';
+
+const BACKGROUND_COLOUR = '#7AA2F7';
+const TEXT_COLOR = '#FFFFFF';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
@@ -49,12 +54,51 @@ const createBall = () => {
     );
 };
 
-const balls = Array.from({ length: initialNumberOfBalls }, createBall);
+const createRowOfBricks = (
+    rowNum: number,
+    colour: string,
+    points: number,
+    height: number = 5,
+    bricksPerRow: number = 8,
+) => {
+    const bricks: Brick[] = [];
+    const brickWidth = canvas.width / bricksPerRow / 1.05;
 
-const components: (Ball | Paddle)[] = [paddle, balls[balls.length-1]];
+    for (let i = 0; i < bricksPerRow; i++) {
+        const brick = new Brick(
+            context,
+            { x: (i * brickWidth) * 1.05 + 1.05, y: rowNum * height * 1.6 + 1.6 },
+            { width: brickWidth, height },
+            colour,
+            points,
+        );
+        bricks.push(brick);
+    }
+
+    return bricks;
+};
+
+const createBricks = () => {
+    const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
+    const bricks: Brick[] = [];
+
+    for (let i = 0; i < colours.length; i++) {
+        const colour = colours[i];
+        const row = createRowOfBricks(i, colour, colours.length - i);
+        bricks.push(...row);
+    }
+
+    return bricks;
+};
+
+const balls = Array.from({ length: initialNumberOfBalls }, createBall);
+const bricks = createBricks();
+let score = 0;
+
+const components: (Ball | Paddle | Brick)[] = [paddle, balls[balls.length - 1], ...bricks];
 const paddleVelocityX = 5;
 
-const detectCollisions = (component: Ball | Paddle) => {
+const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
         const ball = component;
         const ballPosition = ball.getPosition();
@@ -66,9 +110,28 @@ const detectCollisions = (component: Ball | Paddle) => {
 
         const collidesWithPaddle =
             ballPosition.x + ballRadius > paddlePosition.x &&
-            ballPosition.x + ballRadius < paddlePosition.x + paddleWidth &&
+            ballPosition.x - ballRadius < paddlePosition.x + paddleWidth &&
             ballPosition.y + ballRadius > paddlePosition.y &&
-            ballPosition.y + ballRadius < paddlePosition.y + paddleHeight;
+            ballPosition.y - ballRadius < paddlePosition.y + paddleHeight;
+
+        bricks.forEach((brick) => {
+            const brickPosition = brick.getPosition();
+            const { width: brickWidth, height: brickHeight } = brick.getDimensions();
+
+            const collidesWithBrick =
+                ballPosition.x + ballRadius > brickPosition.x &&
+                ballPosition.x - ballRadius < brickPosition.x + brickWidth &&
+                ballPosition.y + ballRadius > brickPosition.y &&
+                ballPosition.y - ballRadius < brickPosition.y + brickHeight;
+
+            if (collidesWithBrick) {
+                components.splice(components.indexOf(brick), 1);
+                bricks.splice(bricks.indexOf(brick), 1);
+                score += brick.points;
+
+                ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
+            }
+        });
 
         const collidesWithRightEdge = ballPosition.x > canvas.width - ballRadius;
         const collidesWithLeftEdge = ballPosition.x < ballRadius;
@@ -86,11 +149,11 @@ const detectCollisions = (component: Ball | Paddle) => {
         if (collidesWithBottomEdge) {
             components.splice(components.indexOf(ball), 1);
             balls.pop();
-            balls[balls.length-1].setPosition({
+            balls[balls.length - 1].setPosition({
                 x: paddlePosition.x + radius + 1,
                 y: paddlePosition.y - radius - 1
             });
-            components.push(balls[balls.length-1]);
+            components.push(balls[balls.length - 1]);
             isBallMoving = false;
         }
     } else if (component instanceof Paddle) {
@@ -112,22 +175,30 @@ const detectCollisions = (component: Ball | Paddle) => {
 const loop = () => {
     requestAnimationFrame(loop);
 
-    context.fillStyle = 'white';
+    if (balls.length === 0) {
+        return;
+    }
+
+    context.fillStyle = BACKGROUND_COLOUR;
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    scoreBoardContext.fillStyle = 'white';
+    scoreBoardContext.fillStyle = BACKGROUND_COLOUR;
     scoreBoardContext.beginPath();
     scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
-    scoreBoardContext.fillStyle = 'black';
+    scoreBoardContext.fillStyle = TEXT_COLOR;
     scoreBoardContext.font = '1rem sans-serif';
     scoreBoardBall.draw();
     scoreBoardContext.fillText(balls.length.toString(), 20, 15);
+    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 20, 15);
 
     components.forEach((component) => {
         detectCollisions(component);
         component.draw();
-        component.move();
+
+        if (component instanceof MovableCanvasEntity) {
+            component.move();
+        }
     });
 };
 
@@ -140,7 +211,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === ARROW_LEFT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length-1].setVelocity({ x: -2, y: -2 });
+            balls[balls.length - 1].setVelocity({ x: -2, y: -2 });
         }
 
         x = -paddleVelocityX;
@@ -148,7 +219,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     } else if (event.key === ARROW_RIGHT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length-1].setVelocity({ x: 2, y: -2 });
+            balls[balls.length - 1].setVelocity({ x: 2, y: -2 });
         }
 
         x = paddleVelocityX;
@@ -184,14 +255,14 @@ const handleKeyUp = (event: KeyboardEvent) => {
 document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
-loop();
-
 type Direction = typeof ARROW_LEFT | typeof ARROW_RIGHT;
-const handleButtonDown = (direction: Direction) => (_event: MouseEvent | TouchEvent) => {
+const handleButtonDown = (direction: Direction) => (event: MouseEvent | TouchEvent) => {
+    event.preventDefault();
     document.dispatchEvent(new KeyboardEvent('keydown', { 'key': direction }));
 };
 
-const handleButtonUp = (direction: Direction) => (_event: MouseEvent | TouchEvent) => {
+const handleButtonUp = (direction: Direction) => (event: MouseEvent | TouchEvent) => {
+    event.preventDefault();
     document.dispatchEvent(new KeyboardEvent('keyup', { 'key': direction }));
 };
 
@@ -219,4 +290,6 @@ if (!app) throw new Error('App root not found');
 app.appendChild(controls);
 controls.appendChild(leftButton);
 controls.appendChild(rightButton);
+
+loop();
 

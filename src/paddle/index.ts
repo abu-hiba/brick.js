@@ -1,7 +1,7 @@
-import { CanvasEntity, RectangleDimensions } from "../canvasEntity";
+import { MovableCanvasEntity, RectangleDimensions } from "../canvasEntity";
 import { Position, Velocity } from "../vectors";
 
-export class Paddle extends CanvasEntity<RectangleDimensions> {
+export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
     private canMove = true;
 
     constructor(
@@ -9,7 +9,7 @@ export class Paddle extends CanvasEntity<RectangleDimensions> {
         position: Position,
         dimensions: RectangleDimensions = { width: 28, height: 2 },
         velocity: Velocity = { x: 0, y: 0 },
-        colour: string = 'black',
+        colour: string = '#15161E',
     ) {
         super(ctx, position, velocity, dimensions, colour);
     };

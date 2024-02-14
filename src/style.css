@@ -1,6 +1,11 @@
 html, body {
     margin: 0;
     height: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
@@ -15,18 +20,22 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
 #canvas {
-    margin-top: 2rem;
-    border: 1px solid black;
-    width: 80%;
+    margin-top: 0rem;
+    border-top: 0.1rem solid #99b8f7;
+    width: 95%;
 }
 
 #score-board {
-    border: 1px solid black;
-    width: 80%;
+    width: 95%;
 }
 
 #controls {
@@ -34,6 +43,20 @@ html, body {
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: absolute;
+    bottom: 2rem;
+}
+
+@media (pointer: fine) {
+    #controls {
+        display: none;
+    }
 }
 
 .arrow-key {
