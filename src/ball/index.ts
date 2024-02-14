@@ -1,7 +1,7 @@
-import { CanvasEntity, CircleDimensions } from "../canvasEntity";
+import { CircleDimensions, MovableCanvasEntity } from "../canvasEntity";
 import { Position, Velocity } from "../vectors";
 
-export class Ball extends CanvasEntity<CircleDimensions> {
+export class Ball extends MovableCanvasEntity<CircleDimensions> {
     constructor(
         ctx: CanvasRenderingContext2D,
         position: Position,
