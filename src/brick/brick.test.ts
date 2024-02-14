@@ -19,7 +19,7 @@ describe('Brick class', () => {
             const initialPosition = { x: 100, y: 100 };
 
             // Act
-            const brick = new Brick(context, initialPosition, { width: 28, height: 2 }, 'black');
+            const brick = new Brick(context, initialPosition, { width: 28, height: 2 }, 'black', 1);
 
             // Assert
             expect(brick).toBeTruthy();
@@ -35,7 +35,7 @@ describe('Brick class', () => {
             const fillRect = vi.spyOn(context, 'fillRect');
             const restore = vi.spyOn(context, 'restore');
 
-            const brick = new Brick(context, initialPosition, { width: 28, height: 2 }, 'black');
+            const brick = new Brick(context, initialPosition, { width: 28, height: 2 }, 'black', 1);
 
             // Act
             brick.draw();
