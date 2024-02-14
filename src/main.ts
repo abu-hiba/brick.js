@@ -51,7 +51,7 @@ const createBall = () => {
 
 const balls = Array.from({ length: initialNumberOfBalls }, createBall);
 
-const components: (Ball | Paddle)[] = [paddle, balls.at(-1)];
+const components: (Ball | Paddle)[] = [paddle, balls[balls.length-1]];
 const paddleVelocityX = 5;
 
 const detectCollisions = (component: Ball | Paddle) => {
@@ -86,11 +86,11 @@ const detectCollisions = (component: Ball | Paddle) => {
         if (collidesWithBottomEdge) {
             components.splice(components.indexOf(ball), 1);
             balls.pop();
-            balls.at(-1).setPosition({
+            balls[balls.length-1].setPosition({
                 x: paddlePosition.x + radius + 1,
                 y: paddlePosition.y - radius - 1
             });
-            components.push(balls.at(-1));
+            components.push(balls[balls.length-1]);
             isBallMoving = false;
         }
     } else if (component instanceof Paddle) {
@@ -140,7 +140,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === ARROW_LEFT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls.at(-1).setVelocity({ x: -2, y: -2 });
+            balls[balls.length-1].setVelocity({ x: -2, y: -2 });
         }
 
         x = -paddleVelocityX;
@@ -148,7 +148,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     } else if (event.key === ARROW_RIGHT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls.at(-1).setVelocity({ x: 2, y: -2 });
+            balls[balls.length-1].setVelocity({ x: 2, y: -2 });
         }
 
         x = paddleVelocityX;
