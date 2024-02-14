@@ -31,11 +31,11 @@ html, body {
 #canvas {
     margin-top: 0rem;
     border-top: 0.1rem solid #99b8f7;
-    width: 90%;
+    width: 95%;
 }
 
 #score-board {
-    width: 90%;
+    width: 95%;
 }
 
 #controls {
