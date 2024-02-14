@@ -30,12 +30,12 @@ html, body {
 
 #canvas {
     margin-top: 0rem;
-    border: 1px solid black;
-    width: 80%;
+    border-top: 0.1rem solid #99b8f7;
+    width: 90%;
 }
 
 #score-board {
-    width: 80%;
+    width: 90%;
 }
 
 #controls {
@@ -51,6 +51,12 @@ html, body {
     user-select: none;
     position: absolute;
     bottom: 2rem;
+}
+
+@media (pointer: fine) {
+    #controls {
+        display: none;
+    }
 }
 
 .arrow-key {

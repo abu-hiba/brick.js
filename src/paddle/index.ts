@@ -9,7 +9,7 @@ export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
         position: Position,
         dimensions: RectangleDimensions = { width: 28, height: 2 },
         velocity: Velocity = { x: 0, y: 0 },
-        colour: string = 'black',
+        colour: string = '#15161E',
     ) {
         super(ctx, position, velocity, dimensions, colour);
     };

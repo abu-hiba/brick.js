@@ -7,6 +7,7 @@ export class Brick extends CanvasEntity<RectangleDimensions> {
         position: Position,
         dimensions: RectangleDimensions,
         colour: string,
+        readonly points: number,
     ) {
         super(ctx, position, dimensions, colour);
     };

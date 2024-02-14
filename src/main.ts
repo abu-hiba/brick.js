@@ -7,6 +7,10 @@ import './style.css'
 const ARROW_LEFT = 'ArrowLeft';
 const ARROW_RIGHT = 'ArrowRight';
 
+const BACKGROUND_COLOUR = '#7AA2F7';
+// const BACKGROUND_COLOUR = '#15161E';
+const TEXT_COLOR = '#FFFFFF';
+
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
     throw new Error('Canvas element not available');
@@ -51,16 +55,23 @@ const createBall = () => {
     );
 };
 
-const createRowOfBricks = (rowNum: number, colour: string, height: number = 5, bricksPerRow: number = 8) => {
+const createRowOfBricks = (
+    rowNum: number,
+    colour: string,
+    points: number,
+    height: number = 5,
+    bricksPerRow: number = 8,
+) => {
     const bricks: Brick[] = [];
     const brickWidth = canvas.width / bricksPerRow / 1.05;
 
     for (let i = 0; i < bricksPerRow; i++) {
         const brick = new Brick(
             context,
-            { x: (i * brickWidth) * 1.05 + 1.05, y: rowNum * height * 1.6},
+            { x: (i * brickWidth) * 1.05 + 1.05, y: rowNum * height * 1.6 + 1.6 },
             { width: brickWidth, height },
-            colour
+            colour,
+            points,
         );
         bricks.push(brick);
     }
@@ -69,12 +80,12 @@ const createRowOfBricks = (rowNum: number, colour: string, height: number = 5, b
 };
 
 const createBricks = () => {
-    const colours = ['green', 'orange', 'red', 'cyan'];
+    const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
     const bricks: Brick[] = [];
 
     for (let i = 0; i < colours.length; i++) {
         const colour = colours[i];
-        const row = createRowOfBricks(i, colour);
+        const row = createRowOfBricks(i, colour, colours.length - i);
         bricks.push(...row);
     }
 
@@ -83,6 +94,7 @@ const createBricks = () => {
 
 const balls = Array.from({ length: initialNumberOfBalls }, createBall);
 const bricks = createBricks();
+let score = 0;
 
 const components: (Ball | Paddle | Brick)[] = [paddle, balls[balls.length - 1], ...bricks];
 const paddleVelocityX = 5;
@@ -116,6 +128,7 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
             if (collidesWithBrick) {
                 components.splice(components.indexOf(brick), 1);
                 bricks.splice(bricks.indexOf(brick), 1);
+                score += brick.points;
 
                 ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
             }
@@ -167,17 +180,18 @@ const loop = () => {
         return;
     }
 
-    context.fillStyle = 'white';
+    context.fillStyle = BACKGROUND_COLOUR;
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    scoreBoardContext.fillStyle = 'white';
+    scoreBoardContext.fillStyle = BACKGROUND_COLOUR;
     scoreBoardContext.beginPath();
     scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
-    scoreBoardContext.fillStyle = 'black';
+    scoreBoardContext.fillStyle = TEXT_COLOR;
     scoreBoardContext.font = '1rem sans-serif';
     scoreBoardBall.draw();
     scoreBoardContext.fillText(balls.length.toString(), 20, 15);
+    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 20, 15);
 
     components.forEach((component) => {
         detectCollisions(component);
