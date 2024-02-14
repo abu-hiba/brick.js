@@ -8,7 +8,6 @@ const ARROW_LEFT = 'ArrowLeft';
 const ARROW_RIGHT = 'ArrowRight';
 
 const BACKGROUND_COLOUR = '#7AA2F7';
-// const BACKGROUND_COLOUR = '#15161E';
 const TEXT_COLOR = '#FFFFFF';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
