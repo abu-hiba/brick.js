@@ -215,7 +215,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
         }
 
         x = -paddleVelocityX;
-        leftButton.setAttribute('class', 'arrow-key pressed');
+        leftButton.setAttribute('class', `${leftButton.className} pressed`);
     } else if (event.key === ARROW_RIGHT) {
         if (isBallMoving === false) {
             isBallMoving = true;
@@ -223,7 +223,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
         }
 
         x = paddleVelocityX;
-        rightButton.setAttribute('class', 'arrow-key pressed');
+        rightButton.setAttribute('class', `${rightButton.className} pressed`);
     }
 
     paddle.setVelocity({ x, y: 0 });
@@ -233,10 +233,10 @@ const handleKeyDown = (event: KeyboardEvent) => {
 const handleKeyUp = (event: KeyboardEvent) => {
     if (event.key === ARROW_LEFT || event.key === ARROW_RIGHT) {
         if (event.key === ARROW_LEFT) {
-            leftButton.setAttribute('class', 'arrow-key');
+            leftButton.setAttribute('class', `${leftButton.className.replace(' pressed', '')}`);
         }
         if (event.key === ARROW_RIGHT) {
-            rightButton.setAttribute('class', 'arrow-key');
+            rightButton.setAttribute('class', `${rightButton.className.replace(' pressed', '')}`);
         }
 
         pressedKeys.delete(event.key);
@@ -266,20 +266,17 @@ const handleButtonUp = (direction: Direction) => (event: MouseEvent | TouchEvent
     document.dispatchEvent(new KeyboardEvent('keyup', { 'key': direction }));
 };
 
-const controls = document.createElement('div');
-controls.setAttribute('id', 'controls');
-
 const leftButton = document.createElement('div');
-leftButton.setAttribute('class', 'arrow-key');
-leftButton.textContent = '⇦';
+leftButton.setAttribute('class', 'arrow-key left');
+leftButton.textContent = '\u25C4';
 leftButton.addEventListener('touchstart', handleButtonDown(ARROW_LEFT));
 leftButton.addEventListener('mousedown', handleButtonDown(ARROW_LEFT));
 leftButton.addEventListener('touchend', handleButtonUp(ARROW_LEFT));
 leftButton.addEventListener('mouseup', handleButtonUp(ARROW_LEFT));
 
 const rightButton = document.createElement('div');
-rightButton.setAttribute('class', 'arrow-key');
-rightButton.textContent = '⇨';
+rightButton.setAttribute('class', 'arrow-key right');
+rightButton.textContent = '\u25BA';
 rightButton.addEventListener('touchstart', handleButtonDown(ARROW_RIGHT));
 rightButton.addEventListener('mousedown', handleButtonDown(ARROW_RIGHT));
 rightButton.addEventListener('touchend', handleButtonUp(ARROW_RIGHT));
@@ -287,9 +284,8 @@ rightButton.addEventListener('mouseup', handleButtonUp(ARROW_RIGHT));
 
 const app = document.querySelector('#app');
 if (!app) throw new Error('App root not found');
-app.appendChild(controls);
-controls.appendChild(leftButton);
-controls.appendChild(rightButton);
+app.appendChild(leftButton);
+app.appendChild(rightButton);
 
 loop();
 
