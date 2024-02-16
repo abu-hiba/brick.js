@@ -14,6 +14,8 @@ const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
     throw new Error('Canvas element not available');
 }
+canvas.width = 1000;
+canvas.height = canvas.width / 1.6;
 
 const context = canvas.getContext('2d');
 if (!context) {
@@ -24,19 +26,21 @@ const scoreBoard = document.querySelector<HTMLCanvasElement>('#score-board');
 if (!scoreBoard) {
     throw new Error('Score board element not available');
 }
-scoreBoard.setAttribute('height', '20');
+scoreBoard.width = 1000;
+scoreBoard.height = 60;
 
 const scoreBoardContext = scoreBoard.getContext('2d');
 if (!scoreBoardContext) {
     throw new Error('Cannot get score board context');
 }
 
-const scoreBoardBall = new Ball(scoreBoardContext, { x: 10, y: 10 }, { radius: 3 });
+const radius = 9;
+
+const scoreBoardBall = new Ball(scoreBoardContext, { x: 20, y: scoreBoard.height * 0.5 }, { radius });
 
 let isBallMoving = false;
 const initialNumberOfBalls = 3;
 
-const radius = 3;
 
 const initialPaddlePosition = { x: (canvas.width / 2) - 14, y: canvas.height - 10 };
 const paddle = new Paddle(context, initialPaddlePosition);
@@ -187,10 +191,10 @@ const loop = () => {
     scoreBoardContext.beginPath();
     scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
     scoreBoardContext.fillStyle = TEXT_COLOR;
-    scoreBoardContext.font = '1rem sans-serif';
+    scoreBoardContext.font = `${scoreBoard.height * 0.8}px sans-serif`;
     scoreBoardBall.draw();
-    scoreBoardContext.fillText(balls.length.toString(), 20, 15);
-    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 20, 15);
+    scoreBoardContext.fillText(balls.length.toString(), 40, scoreBoard.height * 0.8);
+    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 50, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
         detectCollisions(component);
