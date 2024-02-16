@@ -7,7 +7,7 @@ export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
     constructor(
         ctx: CanvasRenderingContext2D,
         position: Position,
-        dimensions: RectangleDimensions = { width: 28, height: 2 },
+        dimensions: RectangleDimensions = { width: 100, height: 62.5 },
         velocity: Velocity = { x: 0, y: 0 },
         colour: string = '#15161E',
     ) {
