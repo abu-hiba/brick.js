@@ -41,7 +41,6 @@ const scoreBoardBall = new Ball(scoreBoardContext, { x: 20, y: scoreBoard.height
 let isBallMoving = false;
 const initialNumberOfBalls = 3;
 
-
 const initialPaddlePosition = { x: (canvas.width / 2) - 14, y: canvas.height - 10 };
 const paddle = new Paddle(context, initialPaddlePosition);
 const paddlePosition = paddle.getPosition();
@@ -62,7 +61,7 @@ const createRowOfBricks = (
     rowNum: number,
     colour: string,
     points: number,
-    height: number = 5,
+    height: number = 20,
     bricksPerRow: number = 8,
 ) => {
     const bricks: Brick[] = [];
@@ -100,7 +99,7 @@ const bricks = createBricks();
 let score = 0;
 
 const components: (Ball | Paddle | Brick)[] = [paddle, balls[balls.length - 1], ...bricks];
-const paddleVelocityX = 5;
+const paddleVelocityX = 10;
 
 const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
@@ -215,7 +214,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === ARROW_LEFT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length - 1].setVelocity({ x: -2, y: -2 });
+            balls[balls.length - 1].setVelocity({ x: -5, y: -5 });
         }
 
         x = -paddleVelocityX;
@@ -223,7 +222,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     } else if (event.key === ARROW_RIGHT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length - 1].setVelocity({ x: 2, y: -2 });
+            balls[balls.length - 1].setVelocity({ x: 5, y: -5 });
         }
 
         x = paddleVelocityX;
