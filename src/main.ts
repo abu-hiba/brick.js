@@ -14,8 +14,9 @@ const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
     throw new Error('Canvas element not available');
 }
+const resolution = window.screen.availWidth / window.screen.availHeight;
 canvas.width = 1000;
-canvas.height = canvas.width / 1.6;
+canvas.height = canvas.width / resolution;
 
 const context = canvas.getContext('2d');
 if (!context) {
@@ -193,7 +194,7 @@ const loop = () => {
     scoreBoardContext.font = `${scoreBoard.height * 0.8}px sans-serif`;
     scoreBoardBall.draw();
     scoreBoardContext.fillText(balls.length.toString(), 40, scoreBoard.height * 0.8);
-    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 50, scoreBoard.height * 0.8);
+    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
         detectCollisions(component);
