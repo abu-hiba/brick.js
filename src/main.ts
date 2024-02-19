@@ -46,6 +46,7 @@ const scoreBoardBall = new Ball(scoreBoardContext, { x: 20, y: scoreBoard.height
 
 let isBallMoving = false;
 const initialNumberOfBalls = 3;
+let ballMovingSpeed = 5;
 
 const initialPaddlePosition = { x: (canvas.width / 2) - 14, y: canvas.height - 10 };
 const paddle = new Paddle(context, initialPaddlePosition);
@@ -107,6 +108,8 @@ let score = 0;
 const components: (Ball | Paddle | Brick)[] = [paddle, balls[balls.length - 1], ...bricks];
 const paddleVelocityX = 10;
 
+const currentBall = () => components.filter((component) => component instanceof Ball)[0] as Ball;
+
 const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
         const ball = component;
@@ -158,11 +161,13 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
         if (collidesWithBottomEdge) {
             components.splice(components.indexOf(ball), 1);
             balls.pop();
-            balls[balls.length - 1].setPosition({
+            const nextBall = balls[balls.length - 1];
+
+            components.push(nextBall);
+            nextBall.setPosition({
                 x: paddlePosition.x + radius + 1,
                 y: paddlePosition.y - radius - 1
             });
-            components.push(balls[balls.length - 1]);
             isBallMoving = false;
         }
     } else if (component instanceof Paddle) {
@@ -209,6 +214,22 @@ const loop = () => {
             component.move();
         }
     });
+
+    if (bricks.length === 0) {
+        const paddlePosition = paddle.getPosition();
+        const ball = currentBall();
+
+        bricks.push(...createBricks());
+        components.push(...bricks);
+        balls.push(createBall());
+        ball.setPosition({
+            x: paddlePosition.x + radius + 1,
+            y: paddlePosition.y - radius - 1
+        });
+        ball.setVelocity({ x: 0, y: 0 });
+        ballMovingSpeed += 2;
+        isBallMoving = false;
+    }
 };
 
 // keep track of pressed keys to avoid stopping
@@ -216,11 +237,12 @@ const loop = () => {
 const pressedKeys = new Set<string>();
 
 const handleKeyDown = (event: KeyboardEvent) => {
+    const ball = currentBall();
     let x = 0;
     if (event.key === ARROW_LEFT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length - 1].setVelocity({ x: -5, y: -5 });
+            ball.setVelocity({ x: -ballMovingSpeed, y: -ballMovingSpeed });
         }
 
         x = -paddleVelocityX;
@@ -228,7 +250,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     } else if (event.key === ARROW_RIGHT) {
         if (isBallMoving === false) {
             isBallMoving = true;
-            balls[balls.length - 1].setVelocity({ x: 5, y: -5 });
+            ball.setVelocity({ x: ballMovingSpeed, y: -ballMovingSpeed });
         }
 
         x = paddleVelocityX;
