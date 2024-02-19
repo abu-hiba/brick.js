@@ -194,7 +194,7 @@ const loop = () => {
     scoreBoardContext.font = `${scoreBoard.height * 0.8}px sans-serif`;
     scoreBoardBall.draw();
     scoreBoardContext.fillText(balls.length.toString(), 40, scoreBoard.height * 0.8);
-    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 50, scoreBoard.height * 0.8);
+    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
         detectCollisions(component);
