@@ -14,8 +14,9 @@ const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
 if (!canvas) {
     throw new Error('Canvas element not available');
 }
+const resolution = window.screen.availWidth / window.screen.availHeight;
 canvas.width = 1000;
-canvas.height = canvas.width / 2;
+canvas.height = canvas.width / resolution;
 
 const context = canvas.getContext('2d');
 if (!context) {
