@@ -16,7 +16,12 @@ if (!canvas) {
 }
 const resolution = window.screen.availWidth / window.screen.availHeight;
 canvas.width = 1000;
-canvas.height = canvas.width / resolution;
+
+if (resolution < 1) {
+    canvas.height = canvas.width / 1.6;
+} else {
+    canvas.height = canvas.width / resolution;
+}
 
 const context = canvas.getContext('2d');
 if (!context) {
