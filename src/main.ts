@@ -15,7 +15,7 @@ if (!canvas) {
     throw new Error('Canvas element not available');
 }
 canvas.width = 1000;
-canvas.height = canvas.width / 1.6;
+canvas.height = canvas.width / 2;
 
 const context = canvas.getContext('2d');
 if (!context) {
