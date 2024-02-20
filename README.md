@@ -1,6 +1,10 @@
 # brick.js
 
+https://brick-js.pages.dev/
+
 A HTML Canvas breakout game inspired by the iPod Nano game [Brick](https://apple.fandom.com/wiki/Games_on_1st_and_2nd_Gen._iPod_Nano#Brick).
+
+https://github.com/abu-hiba/brick.js/assets/30255942/19ef0567-b310-4ec6-b76f-15c17e5ac5cc
 
 ## Development
 ### Install dependencies
