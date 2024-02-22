@@ -27,10 +27,12 @@ const scoreBoardBall = new Ball(
 const initialPaddlePosition = { x: (gameCanvas.width / 2) - 14, y: gameCanvas.height - 10 };
 const paddle = new Paddle(gameCanvas.context, initialPaddlePosition);
 
+// State
 let canBallMove = false;
 let ballSpeed = 5;
+let score = 0;
+let ballsRemaining = INITIAL_BALL_COUNT;
 
-let balls = INITIAL_BALL_COUNT;
 const ball = new Ball(
     gameCanvas.context,
     {
@@ -41,7 +43,6 @@ const ball = new Ball(
     { x: 0, y: 0 },
 );
 const bricks = createBricks(gameCanvas.context, gameCanvas.width);
-let score = 0;
 
 const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
 const paddleVelocityX = 10;
@@ -97,8 +98,8 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
         }
 
         if (collidesWithBottomEdge) {
-            balls--;
-            if (balls === 0) {
+            ballsRemaining--;
+            if (ballsRemaining === 0) {
                 components.splice(components.indexOf(ball), 1);
             } else {
                 ball.setVelocity({ x: 0, y: 0 });
@@ -138,7 +139,7 @@ const loop = () => {
     scoreBoard.context.fillStyle = TEXT_COLOR;
     scoreBoard.context.font = `${scoreBoard.height * 0.8}px sans-serif`;
     scoreBoardBall.draw();
-    scoreBoard.context.fillText(balls.toString(), 40, scoreBoard.height * 0.8);
+    scoreBoard.context.fillText(ballsRemaining.toString(), 40, scoreBoard.height * 0.8);
     scoreBoard.context.fillText(score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
@@ -155,7 +156,7 @@ const loop = () => {
         const ball = currentBall();
 
         components.push(...bricks);
-        balls++;
+        ballsRemaining++;
         ball.setPosition({
             x: paddlePosition.x + RADIUS + 1,
             y: paddlePosition.y - RADIUS - 1
