@@ -8,10 +8,8 @@ import './style.css'
 
 const ARROW_LEFT = 'ArrowLeft';
 const ARROW_RIGHT = 'ArrowRight';
-
 const BACKGROUND_COLOUR = '#7AA2F7';
 const TEXT_COLOR = '#FFFFFF';
-
 const RADIUS = 9;
 const INITIAL_BALL_COUNT = 3;
 const PADDLE_VELOCITY_X = 10;
@@ -47,7 +45,8 @@ const bricks = createBricks(gameCanvas.context, gameCanvas.width);
 
 const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
 
-const currentBall = () => components.filter((component) => component instanceof Ball)[0] as Ball;
+const currentBall = () => components.filter((component): component is Ball => component instanceof Ball)[0];
+const currentBricks = () => components.filter((component): component is Brick => component instanceof Brick);
 
 const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
@@ -65,8 +64,7 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
             ballPosition.y + ballRadius > paddlePosition.y &&
             ballPosition.y - ballRadius < paddlePosition.y + paddleHeight;
 
-        const remainingBricks = components.filter((component): component is Brick => component instanceof Brick);
-        remainingBricks.forEach((brick) => {
+        currentBricks().forEach((brick) => {
             const brickPosition = brick.getPosition();
             const { width: brickWidth, height: brickHeight } = brick.getDimensions();
 
@@ -151,7 +149,7 @@ const loop = () => {
         }
     });
 
-    if (components.filter((component) => component instanceof Brick).length === 0) {
+    if (currentBricks().length === 0) {
         const paddlePosition = paddle.getPosition();
         const ball = currentBall();
 
