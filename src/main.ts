@@ -14,6 +14,7 @@ const TEXT_COLOR = '#FFFFFF';
 
 const RADIUS = 9;
 const INITIAL_BALL_COUNT = 3;
+const PADDLE_VELOCITY_X = 10;
 
 const gameCanvas = new GameCanvas();
 const scoreBoard = new ScoreBoard();
@@ -45,7 +46,6 @@ const ball = new Ball(
 const bricks = createBricks(gameCanvas.context, gameCanvas.width);
 
 const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
-const paddleVelocityX = 10;
 
 const currentBall = () => components.filter((component) => component instanceof Ball)[0] as Ball;
 
@@ -180,7 +180,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             ball.setVelocity({ x: -ballSpeed, y: -ballSpeed });
         }
 
-        x = -paddleVelocityX;
+        x = -PADDLE_VELOCITY_X;
         leftButton.setAttribute('class', `${leftButton.className} pressed`);
     } else if (event.key === ARROW_RIGHT) {
         if (canBallMove === false) {
@@ -188,7 +188,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             ball.setVelocity({ x: ballSpeed, y: -ballSpeed });
         }
 
-        x = paddleVelocityX;
+        x = PADDLE_VELOCITY_X;
         rightButton.setAttribute('class', `${rightButton.className} pressed`);
     }
 
@@ -209,9 +209,9 @@ const handleKeyUp = (event: KeyboardEvent) => {
 
         let x = 0;
         if (pressedKeys.has(ARROW_LEFT)) {
-            x = -paddleVelocityX;
+            x = -PADDLE_VELOCITY_X;
         } else if (pressedKeys.has(ARROW_RIGHT)) {
-            x = paddleVelocityX;
+            x = PADDLE_VELOCITY_X;
         }
 
         paddle.setVelocity({ x, y: 0 });
