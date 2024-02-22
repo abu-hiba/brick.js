@@ -38,7 +38,7 @@ const ball = new Ball(
         y: initialPaddlePosition.y - RADIUS - 1
     },
     { radius: RADIUS },
-    { x: 0, y: 0},
+    { x: 0, y: 0 },
 );
 const bricks = createBricks(gameCanvas.context, gameCanvas.width);
 let score = 0;
@@ -64,7 +64,8 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
             ballPosition.y + ballRadius > paddlePosition.y &&
             ballPosition.y - ballRadius < paddlePosition.y + paddleHeight;
 
-        bricks.forEach((brick) => {
+        const remainingBricks = components.filter((component): component is Brick => component instanceof Brick);
+        remainingBricks.forEach((brick) => {
             const brickPosition = brick.getPosition();
             const { width: brickWidth, height: brickHeight } = brick.getDimensions();
 
@@ -76,7 +77,6 @@ const detectCollisions = (component: Ball | Paddle | Brick) => {
 
             if (collidesWithBrick) {
                 components.splice(components.indexOf(brick), 1);
-                bricks.splice(bricks.indexOf(brick), 1);
                 score += brick.points;
 
                 ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
@@ -150,11 +150,10 @@ const loop = () => {
         }
     });
 
-    if (bricks.length === 0) {
+    if (components.filter((component) => component instanceof Brick).length === 0) {
         const paddlePosition = paddle.getPosition();
         const ball = currentBall();
 
-        bricks.push(...createBricks(gameCanvas.context, gameCanvas.width));
         components.push(...bricks);
         balls++;
         ball.setPosition({
