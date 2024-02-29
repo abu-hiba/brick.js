@@ -3,20 +3,19 @@ import { Position, Velocity } from "../vectors";
 
 export class Ball extends MovableCanvasEntity<CircleDimensions> {
     constructor(
-        ctx: CanvasRenderingContext2D,
         position: Position,
         dimensions: CircleDimensions,
         velocity: Velocity = { x: 0, y: 0 },
         colour: string = '#414868',
     ) {
-        super(ctx, position, velocity, dimensions, colour);
+        super(position, velocity, dimensions, colour);
     };
 
-    readonly draw = () => {
-        this.ctx.save();
+    readonly draw = (ctx: CanvasRenderingContext2D) => {
+        ctx.save();
         const path = new Path2D();
-        this.ctx.beginPath();
-        this.ctx.fillStyle = this.colour;
+        ctx.beginPath();
+        ctx.fillStyle = this.colour;
         path.arc(
             this.position.x,
             this.position.y,
@@ -24,8 +23,15 @@ export class Ball extends MovableCanvasEntity<CircleDimensions> {
             0,
             2 * Math.PI
         );
-        this.ctx.fill(path);
-        this.ctx.restore();
+        ctx.fill(path);
+        ctx.restore();
+    };
+
+    readonly getBoundingBox = () => {
+        return {
+            width: this.dimensions.radius * 2,
+            height: this.dimensions.radius * 2
+        };
     };
 
     readonly move = () => {

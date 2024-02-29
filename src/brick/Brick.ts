@@ -3,27 +3,30 @@ import { Position } from "../vectors";
 
 export class Brick extends CanvasEntity<RectangleDimensions> {
     constructor(
-        ctx: CanvasRenderingContext2D,
         position: Position,
         dimensions: RectangleDimensions,
         colour: string,
         readonly points: number,
     ) {
-        super(ctx, position, dimensions, colour);
+        super(position, dimensions, colour);
     };
 
-    readonly draw = () => {
-        this.ctx.save();
-        this.ctx.fillStyle = this.colour;
-        this.ctx.lineWidth = 1;
-        this.ctx.shadowBlur = 0;
-        this.ctx.fillRect(
+    readonly draw = (ctx: CanvasRenderingContext2D) => {
+        ctx.save();
+        ctx.fillStyle = this.colour;
+        ctx.lineWidth = 1;
+        ctx.shadowBlur = 0;
+        ctx.fillRect(
             this.position.x,
             this.position.y,
             this.dimensions.width, 
             this.dimensions.height,
         );
-        this.ctx.restore();
+        ctx.restore();
+    };
+
+    readonly getBoundingBox = () => {
+        return this.dimensions;
     };
 };
 

@@ -18,13 +18,12 @@ const gameCanvas = new GameCanvas();
 const scoreBoard = new ScoreBoard();
 
 const scoreBoardBall = new Ball(
-    scoreBoard.context,
     { x: 20, y: scoreBoard.height * 0.5 },
     { radius: RADIUS }
 );
 
 const initialPaddlePosition = { x: (gameCanvas.width / 2) - 14, y: gameCanvas.height - 10 };
-const paddle = new Paddle(gameCanvas.context, initialPaddlePosition);
+const paddle = new Paddle(initialPaddlePosition);
 
 // State
 let canBallMove = false;
@@ -33,7 +32,6 @@ let score = 0;
 let ballsRemaining = INITIAL_BALL_COUNT;
 
 const ball = new Ball(
-    gameCanvas.context,
     {
         x: initialPaddlePosition.x + RADIUS + 1,
         y: initialPaddlePosition.y - RADIUS - 1
@@ -47,6 +45,14 @@ const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
 
 const currentBall = () => components.filter((component): component is Ball => component instanceof Ball)[0];
 const currentBricks = () => components.filter((component): component is Brick => component instanceof Brick);
+
+const _detectCollisions = (component: Ball | Paddle | Brick) => {
+    components.forEach((otherComponent) => {
+        if (component === otherComponent) return;
+
+        
+    });
+};
 
 const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
@@ -136,13 +142,13 @@ const loop = () => {
     scoreBoard.context.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
     scoreBoard.context.fillStyle = TEXT_COLOR;
     scoreBoard.context.font = `${scoreBoard.height * 0.8}px sans-serif`;
-    scoreBoardBall.draw();
+    scoreBoardBall.draw(scoreBoard.context);
     scoreBoard.context.fillText(ballsRemaining.toString(), 40, scoreBoard.height * 0.8);
     scoreBoard.context.fillText(score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
         detectCollisions(component);
-        component.draw();
+        component.draw(gameCanvas.context);
 
         if (component instanceof MovableCanvasEntity) {
             component.move();

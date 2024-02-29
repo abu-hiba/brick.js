@@ -22,7 +22,7 @@ describe('Ball class', () => {
             const initialPosition = { x: 50, y: 50 };
 
             // Act
-            const ball = new Ball(context, initialPosition, { radius: RADIUS });
+            const ball = new Ball(initialPosition, { radius: RADIUS });
 
             // Assert
             expect(ball).toBeTruthy();
@@ -43,10 +43,10 @@ describe('Ball class', () => {
             const Path2DMock = vi.fn(() => ({ arc }));
             vi.stubGlobal('Path2D', Path2DMock);
 
-            const ball = new Ball(context, initialPosition, { radius: RADIUS });
+            const ball = new Ball(initialPosition, { radius: RADIUS });
 
             // Act
-            ball.draw();
+            ball.draw(context);
 
             // Assert
             expect(save).toHaveBeenCalledTimes(1);
@@ -67,7 +67,6 @@ describe('Ball class', () => {
             const initialVelocity = { x: 1, y: 1 };
 
             const ball = new Ball(
-                context,
                 initialPosition,
                 { radius: RADIUS },
                 initialVelocity

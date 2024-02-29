@@ -5,25 +5,24 @@ export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
     private canMove = true;
 
     constructor(
-        ctx: CanvasRenderingContext2D,
         position: Position,
         dimensions: RectangleDimensions = { width: 100, height: 62.5 },
         velocity: Velocity = { x: 0, y: 0 },
         colour: string = '#15161E',
     ) {
-        super(ctx, position, velocity, dimensions, colour);
+        super(position, velocity, dimensions, colour);
     };
 
-    readonly draw = () => {
-        this.ctx.save();
-        this.ctx.fillStyle = this.colour;
-        this.ctx.fillRect(
+    readonly draw = (ctx: CanvasRenderingContext2D) => {
+        ctx.save();
+        ctx.fillStyle = this.colour;
+        ctx.fillRect(
             this.position.x,
             this.position.y,
             this.dimensions.width, 
             this.dimensions.height,
         );
-        this.ctx.restore();
+        ctx.restore();
     };
 
     readonly move = () => {
@@ -34,6 +33,10 @@ export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
 
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+    };
+
+    readonly getBoundingBox = () => {
+        return this.dimensions;
     };
 
     readonly setCanMove = (canMove: boolean) => {

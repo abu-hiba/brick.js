@@ -16,7 +16,6 @@ const createRowOfBricks = (params: CreateRowOfBricksParams) => {
 
     for (let i = 0; i < params.bricksPerRow; i++) {
         const brick = new Brick(
-            params.context,
             {
                 x: (i * brickWidth) * 1.05 + 1.05,
                 y: params.rowIndex * params.rowHeight * 1.6 + 1.6
@@ -35,7 +34,8 @@ const createRowOfBricks = (params: CreateRowOfBricksParams) => {
 };
 
 export const createBricks = (context: CanvasRenderingContext2D, rowWidth: number) => {
-    const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
+    // const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
+    const colours = ['#9ECE6A'];
     const bricks: Brick[] = [];
 
     for (let i = 0; i < colours.length; i++) {
