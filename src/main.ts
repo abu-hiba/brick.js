@@ -46,14 +46,6 @@ const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
 const currentBall = () => components.filter((component): component is Ball => component instanceof Ball)[0];
 const currentBricks = () => components.filter((component): component is Brick => component instanceof Brick);
 
-const _detectCollisions = (component: Ball | Paddle | Brick) => {
-    components.forEach((otherComponent) => {
-        if (component === otherComponent) return;
-
-        
-    });
-};
-
 const detectCollisions = (component: Ball | Paddle | Brick) => {
     if (component instanceof Ball) {
         const ball = component;
