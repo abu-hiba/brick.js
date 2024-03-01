@@ -4,8 +4,8 @@ export class GameCanvas {
     readonly height: number;
     readonly context: CanvasRenderingContext2D;
 
-    constructor() {
-        const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
+    constructor(selector: string) {
+        const canvas = document.querySelector<HTMLCanvasElement>(selector);
         if (!canvas) {
             throw new Error('Canvas element not available');
         }

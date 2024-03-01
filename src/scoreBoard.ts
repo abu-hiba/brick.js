@@ -4,8 +4,8 @@ export class ScoreBoard {
     readonly height: number;
     readonly context: CanvasRenderingContext2D;
 
-    constructor() {
-        const scoreBoard = document.querySelector<HTMLCanvasElement>('#score-board');
+    constructor(selector: string) {
+        const scoreBoard = document.querySelector<HTMLCanvasElement>(selector);
         if (!scoreBoard) {
             throw new Error('Score board element not available');
         }

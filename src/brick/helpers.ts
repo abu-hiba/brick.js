@@ -34,8 +34,7 @@ const createRowOfBricks = (params: CreateRowOfBricksParams) => {
 };
 
 export const createBricks = (context: CanvasRenderingContext2D, rowWidth: number) => {
-    // const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
-    const colours = ['#9ECE6A'];
+    const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
     const bricks: Brick[] = [];
 
     for (let i = 0; i < colours.length; i++) {
