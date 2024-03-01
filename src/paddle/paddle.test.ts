@@ -19,7 +19,7 @@ describe('Paddle class', () => {
             const initialPosition = { x: 100, y: 100 };
 
             // Act
-            const paddle = new Paddle(context, initialPosition);
+            const paddle = new Paddle(initialPosition);
 
             // Assert
             expect(paddle).toBeTruthy();
@@ -35,14 +35,14 @@ describe('Paddle class', () => {
             const fillRect = vi.spyOn(context, 'fillRect');
             const restore = vi.spyOn(context, 'restore');
 
-            const paddle = new Paddle(context, initialPosition);
+            const paddle = new Paddle(initialPosition);
 
             // Act
-            paddle.draw();
+            paddle.draw(context);
 
             // Assert
             expect(save).toHaveBeenCalledTimes(1);
-            expect(fillRect).toHaveBeenCalledWith(100, 100, 28, 2);
+            expect(fillRect).toHaveBeenCalledWith(100, 100, 100, 62.5);
             expect(fillRect).toHaveBeenCalledTimes(1);
             expect(restore).toHaveBeenCalledTimes(1);
         });
@@ -55,7 +55,6 @@ describe('Paddle class', () => {
             const initialVelocity = { x: 1, y: 1 };
 
             const paddle = new Paddle(
-                context,
                 initialPosition,
             );
 
@@ -75,7 +74,6 @@ describe('Paddle class', () => {
             const initialVelocity = { x: 1, y: 1 };
 
             const paddle = new Paddle(
-                context,
                 initialPosition,
             );
 

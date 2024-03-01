@@ -1,234 +1,95 @@
 import { Ball } from './ball';
-import { Brick } from './brick';
+import { Brick, createBricks } from './brick';
 import { MovableCanvasEntity } from './canvasEntity';
 import { Paddle } from './paddle';
+import { GameCanvas } from './gameCanvas';
+import { ScoreBoard } from './scoreBoard';
 import './style.css'
+import {
+    ARROW_LEFT,
+    ARROW_RIGHT,
+    BACKGROUND_COLOUR,
+    PADDLE_VELOCITY_X,
+    RADIUS,
+    TEXT_COLOR
+} from './constants';
+import { state } from './state';
+import { detectCollisions } from './detectCollisions';
 
-const ARROW_LEFT = 'ArrowLeft';
-const ARROW_RIGHT = 'ArrowRight';
+const gameCanvas = new GameCanvas('#game-canvas');
+const scoreBoard = new ScoreBoard('#score-board');
 
-const BACKGROUND_COLOUR = '#7AA2F7';
-const TEXT_COLOR = '#FFFFFF';
+const scoreBoardBall = new Ball(
+    { x: 20, y: scoreBoard.height * 0.5 },
+    { radius: RADIUS }
+);
 
-const canvas = document.querySelector<HTMLCanvasElement>('#canvas');
-if (!canvas) {
-    throw new Error('Canvas element not available');
-}
-const resolution = window.screen.availWidth / window.screen.availHeight;
-canvas.width = 1000;
+const initialPaddlePosition = { x: (gameCanvas.width / 2) - 14, y: gameCanvas.height - 10 };
+const paddle = new Paddle(initialPaddlePosition);
 
-if (resolution < 1) {
-    canvas.height = canvas.width / 1.6;
-} else {
-    canvas.height = canvas.width / resolution;
-}
+const ball = new Ball(
+    {
+        x: initialPaddlePosition.x + RADIUS + 1,
+        y: initialPaddlePosition.y - RADIUS - 1
+    },
+    { radius: RADIUS },
+    { x: 0, y: 0 },
+);
+const bricks = createBricks(gameCanvas.context, gameCanvas.width);
 
-const context = canvas.getContext('2d');
-if (!context) {
-    throw new Error('Cannot get canvas context');
-}
+const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
 
-const scoreBoard = document.querySelector<HTMLCanvasElement>('#score-board');
-if (!scoreBoard) {
-    throw new Error('Score board element not available');
-}
-scoreBoard.width = 1000;
-scoreBoard.height = 60;
-
-const scoreBoardContext = scoreBoard.getContext('2d');
-if (!scoreBoardContext) {
-    throw new Error('Cannot get score board context');
-}
-
-const radius = 9;
-
-const scoreBoardBall = new Ball(scoreBoardContext, { x: 20, y: scoreBoard.height * 0.5 }, { radius });
-
-let isBallMoving = false;
-const initialNumberOfBalls = 3;
-let ballMovingSpeed = 5;
-
-const initialPaddlePosition = { x: (canvas.width / 2) - 14, y: canvas.height - 10 };
-const paddle = new Paddle(context, initialPaddlePosition);
-const paddlePosition = paddle.getPosition();
-
-const createBall = () => {
-    return new Ball(
-        context,
-        {
-            x: paddlePosition.x + radius + 1,
-            y: paddlePosition.y - radius - 1
-        },
-        { radius },
-        { x: 0, y: 0 }
-    );
-};
-
-const createRowOfBricks = (
-    rowNum: number,
-    colour: string,
-    points: number,
-    height: number = 20,
-    bricksPerRow: number = 8,
-) => {
-    const bricks: Brick[] = [];
-    const brickWidth = canvas.width / bricksPerRow / 1.05;
-
-    for (let i = 0; i < bricksPerRow; i++) {
-        const brick = new Brick(
-            context,
-            { x: (i * brickWidth) * 1.05 + 1.05, y: rowNum * height * 1.6 + 1.6 },
-            { width: brickWidth, height },
-            colour,
-            points,
-        );
-        bricks.push(brick);
-    }
-
-    return bricks;
-};
-
-const createBricks = () => {
-    const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
-    const bricks: Brick[] = [];
-
-    for (let i = 0; i < colours.length; i++) {
-        const colour = colours[i];
-        const row = createRowOfBricks(i, colour, colours.length - i);
-        bricks.push(...row);
-    }
-
-    return bricks;
-};
-
-const balls = Array.from({ length: initialNumberOfBalls }, createBall);
-const bricks = createBricks();
-let score = 0;
-
-const components: (Ball | Paddle | Brick)[] = [paddle, balls[balls.length - 1], ...bricks];
-const paddleVelocityX = 10;
-
-const currentBall = () => components.filter((component) => component instanceof Ball)[0] as Ball;
-
-const detectCollisions = (component: Ball | Paddle | Brick) => {
-    if (component instanceof Ball) {
-        const ball = component;
-        const ballPosition = ball.getPosition();
-        const ballRadius = ball.getDimensions().radius;
-        const ballVelocity = ball.getVelocity();
-
-        const paddlePosition = paddle.getPosition();
-        const { width: paddleWidth, height: paddleHeight } = paddle.getDimensions();
-
-        const collidesWithPaddle =
-            ballPosition.x + ballRadius > paddlePosition.x &&
-            ballPosition.x - ballRadius < paddlePosition.x + paddleWidth &&
-            ballPosition.y + ballRadius > paddlePosition.y &&
-            ballPosition.y - ballRadius < paddlePosition.y + paddleHeight;
-
-        bricks.forEach((brick) => {
-            const brickPosition = brick.getPosition();
-            const { width: brickWidth, height: brickHeight } = brick.getDimensions();
-
-            const collidesWithBrick =
-                ballPosition.x + ballRadius > brickPosition.x &&
-                ballPosition.x - ballRadius < brickPosition.x + brickWidth &&
-                ballPosition.y + ballRadius > brickPosition.y &&
-                ballPosition.y - ballRadius < brickPosition.y + brickHeight;
-
-            if (collidesWithBrick) {
-                components.splice(components.indexOf(brick), 1);
-                bricks.splice(bricks.indexOf(brick), 1);
-                score += brick.points;
-
-                ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
-            }
-        });
-
-        const collidesWithRightEdge = ballPosition.x > canvas.width - ballRadius;
-        const collidesWithLeftEdge = ballPosition.x < ballRadius;
-        const collidesWithTopEdge = ballPosition.y < ballRadius;
-        const collidesWithBottomEdge = ballPosition.y > canvas.height - ballRadius;
-
-        if (collidesWithRightEdge || collidesWithLeftEdge) {
-            ball.setVelocity({ x: -ballVelocity.x, y: ballVelocity.y });
-        }
-
-        if (collidesWithPaddle || collidesWithTopEdge) {
-            ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
-        }
-
-        if (collidesWithBottomEdge) {
-            components.splice(components.indexOf(ball), 1);
-            balls.pop();
-            const nextBall = balls[balls.length - 1];
-
-            components.push(nextBall);
-            nextBall.setPosition({
-                x: paddlePosition.x + radius + 1,
-                y: paddlePosition.y - radius - 1
-            });
-            isBallMoving = false;
-        }
-    } else if (component instanceof Paddle) {
-        const paddle = component;
-        const paddlePosition = paddle.getPosition();
-        const paddleWidth = paddle.getDimensions().width;
-        const paddleVelocity = paddle.getVelocity();
-
-        const collidesWithRightEdge =
-            paddlePosition.x + paddleVelocity.x > canvas.width - paddleWidth;
-        const collidesWithLeftEdge = paddlePosition.x + paddleVelocity.x < 0;
-
-        if (collidesWithRightEdge || collidesWithLeftEdge) {
-            paddle.setCanMove(false);
-        }
-    }
-};
+const currentBall = () => components.filter(
+    (component): component is Ball => component instanceof Ball
+)[0];
+const currentBricks = () => components.filter(
+    (component): component is Brick => component instanceof Brick
+);
 
 const loop = () => {
     requestAnimationFrame(loop);
 
-    if (balls.length === 0) {
-        return;
-    }
+    gameCanvas.context.fillStyle = BACKGROUND_COLOUR;
+    gameCanvas.context.beginPath();
+    gameCanvas.context.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-    context.fillStyle = BACKGROUND_COLOUR;
-    context.beginPath();
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    scoreBoardContext.fillStyle = BACKGROUND_COLOUR;
-    scoreBoardContext.beginPath();
-    scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
-    scoreBoardContext.fillStyle = TEXT_COLOR;
-    scoreBoardContext.font = `${scoreBoard.height * 0.8}px sans-serif`;
-    scoreBoardBall.draw();
-    scoreBoardContext.fillText(balls.length.toString(), 40, scoreBoard.height * 0.8);
-    scoreBoardContext.fillText(score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
+    scoreBoard.context.fillStyle = BACKGROUND_COLOUR;
+    scoreBoard.context.beginPath();
+    scoreBoard.context.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
+    scoreBoard.context.fillStyle = TEXT_COLOR;
+    scoreBoard.context.font = `${scoreBoard.height * 0.8}px sans-serif`;
+    scoreBoardBall.draw(scoreBoard.context);
+    scoreBoard.context.fillText(state.ballsRemaining.toString(), 40, scoreBoard.height * 0.8);
+    scoreBoard.context.fillText(state.score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
     components.forEach((component) => {
-        detectCollisions(component);
-        component.draw();
+        detectCollisions(
+            component,
+            components,
+            paddle,
+            currentBricks(),
+            gameCanvas,
+        );
+        component.draw(gameCanvas.context);
 
         if (component instanceof MovableCanvasEntity) {
             component.move();
         }
     });
 
-    if (bricks.length === 0) {
+    if (currentBricks().length === 0) {
         const paddlePosition = paddle.getPosition();
         const ball = currentBall();
 
-        bricks.push(...createBricks());
         components.push(...bricks);
-        balls.push(createBall());
+        state.ballsRemaining++;
         ball.setPosition({
-            x: paddlePosition.x + radius + 1,
-            y: paddlePosition.y - radius - 1
+            x: paddlePosition.x + RADIUS + 1,
+            y: paddlePosition.y - RADIUS - 1
         });
         ball.setVelocity({ x: 0, y: 0 });
-        ballMovingSpeed += 2;
-        isBallMoving = false;
+        state.ballSpeed += 2;
+        state.canBallMove = false;
     }
 };
 
@@ -240,20 +101,20 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const ball = currentBall();
     let x = 0;
     if (event.key === ARROW_LEFT) {
-        if (isBallMoving === false) {
-            isBallMoving = true;
-            ball.setVelocity({ x: -ballMovingSpeed, y: -ballMovingSpeed });
+        if (state.canBallMove === false) {
+            state.canBallMove = true;
+            ball.setVelocity({ x: -state.ballSpeed, y: -state.ballSpeed });
         }
 
-        x = -paddleVelocityX;
+        x = -PADDLE_VELOCITY_X;
         leftButton.setAttribute('class', `${leftButton.className} pressed`);
     } else if (event.key === ARROW_RIGHT) {
-        if (isBallMoving === false) {
-            isBallMoving = true;
-            ball.setVelocity({ x: ballMovingSpeed, y: -ballMovingSpeed });
+        if (state.canBallMove === false) {
+            state.canBallMove = true;
+            ball.setVelocity({ x: state.ballSpeed, y: -state.ballSpeed });
         }
 
-        x = paddleVelocityX;
+        x = PADDLE_VELOCITY_X;
         rightButton.setAttribute('class', `${rightButton.className} pressed`);
     }
 
@@ -274,9 +135,9 @@ const handleKeyUp = (event: KeyboardEvent) => {
 
         let x = 0;
         if (pressedKeys.has(ARROW_LEFT)) {
-            x = -paddleVelocityX;
+            x = -PADDLE_VELOCITY_X;
         } else if (pressedKeys.has(ARROW_RIGHT)) {
-            x = paddleVelocityX;
+            x = PADDLE_VELOCITY_X;
         }
 
         paddle.setVelocity({ x, y: 0 });
