@@ -27,13 +27,6 @@ export class Ball extends MovableCanvasEntity<CircleDimensions> {
         ctx.restore();
     };
 
-    readonly getBoundingBox = () => {
-        return {
-            width: this.dimensions.radius * 2,
-            height: this.dimensions.radius * 2
-        };
-    };
-
     readonly move = () => {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;

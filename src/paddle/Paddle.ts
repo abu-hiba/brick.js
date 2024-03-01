@@ -35,10 +35,6 @@ export class Paddle extends MovableCanvasEntity<RectangleDimensions> {
         this.position.y += this.velocity.y;
     };
 
-    readonly getBoundingBox = () => {
-        return this.dimensions;
-    };
-
     readonly setCanMove = (canMove: boolean) => {
         this.canMove = canMove;
     };

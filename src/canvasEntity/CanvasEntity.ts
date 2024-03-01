@@ -12,7 +12,6 @@ export abstract class CanvasEntity<DimensionType extends Dimensions> {
     ) { };
 
     abstract readonly draw: (ctx: CanvasRenderingContext2D) => void;
-    abstract readonly getBoundingBox: () => { width: number, height: number };
     readonly getPosition = () => this.position;
     readonly getDimensions = () => this.dimensions;
 };
