@@ -3,6 +3,5 @@ export const ARROW_RIGHT = 'ArrowRight';
 export const BACKGROUND_COLOUR = '#7AA2F7';
 export const TEXT_COLOR = '#FFFFFF';
 export const RADIUS = 9;
-export const INITIAL_BALL_COUNT = 3;
 export const PADDLE_VELOCITY_X = 10;
 

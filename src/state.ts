@@ -1,9 +1,20 @@
-import { INITIAL_BALL_COUNT } from "./constants";
+import { Ball } from "./ball";
+import { Brick } from "./brick";
+import { Paddle } from "./paddle";
 
-export const state = {
+type State = {
+    components: (Ball | Paddle | Brick)[],
+    canBallMove: boolean,
+    ballSpeed: number,
+    score: number,
+    ballsRemaining: number,
+};
+
+export const state: State = {
+    components: [],
     canBallMove: false,
     ballSpeed: 5,
     score: 0,
-    ballsRemaining: INITIAL_BALL_COUNT,
+    ballsRemaining: 3,
 };
 
