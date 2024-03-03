@@ -37,12 +37,12 @@ const ball = new Ball(
 );
 const bricks = createBricks(gameCanvas.context, gameCanvas.width);
 
-const components: (Ball | Paddle | Brick)[] = [paddle, ball, ...bricks];
+state.components = [paddle, ball, ...bricks];
 
-const currentBall = () => components.filter(
+const currentBall = () => state.components.filter(
     (component): component is Ball => component instanceof Ball
 )[0];
-const currentBricks = () => components.filter(
+const currentBricks = () => state.components.filter(
     (component): component is Brick => component instanceof Brick
 );
 
@@ -62,10 +62,10 @@ const loop = () => {
     scoreBoard.context.fillText(state.ballsRemaining.toString(), 40, scoreBoard.height * 0.8);
     scoreBoard.context.fillText(state.score.toString(), scoreBoard.width - 100, scoreBoard.height * 0.8);
 
-    components.forEach((component) => {
+    state.components.forEach((component) => {
         detectCollisions(
             component,
-            components,
+            state.components,
             paddle,
             currentBricks(),
             gameCanvas,
@@ -81,7 +81,7 @@ const loop = () => {
         const paddlePosition = paddle.getPosition();
         const ball = currentBall();
 
-        components.push(...bricks);
+        state.components.push(...bricks);
         state.ballsRemaining++;
         ball.setPosition({
             x: paddlePosition.x + RADIUS + 1,
