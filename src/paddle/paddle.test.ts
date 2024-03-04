@@ -58,14 +58,14 @@ describe('Paddle class', () => {
                 initialPosition,
             );
 
-            paddle.setVelocity(initialVelocity);
+            paddle.velocity = initialVelocity;
 
             // Act
             paddle.move();
 
             // Assert
-            expect(paddle.getPosition()).toEqual({ x: 101, y: 101 });
-            expect(paddle.getVelocity()).toEqual({ x: 1, y: 1 });
+            expect(paddle.position).toEqual({ x: 101, y: 101 });
+            expect(paddle.velocity).toEqual({ x: 1, y: 1 });
         });
 
         it('should not move paddle if canMove is false', () => {
@@ -77,15 +77,15 @@ describe('Paddle class', () => {
                 initialPosition,
             );
 
-            paddle.setVelocity(initialVelocity);
+            paddle.velocity = initialVelocity;
             paddle.canMove = false;
 
             // Act
             paddle.move();
 
             // Assert
-            expect(paddle.getPosition()).toEqual({ x: 100, y: 100 });
-            expect(paddle.getVelocity()).toEqual({ x: 1, y: 1 });
+            expect(paddle.position).toEqual({ x: 100, y: 100 });
+            expect(paddle.velocity).toEqual({ x: 1, y: 1 });
         });
     });
 });

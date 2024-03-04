@@ -77,8 +77,8 @@ describe('Ball class', () => {
             ball.move();
 
             // Assert
-            expect(ball.getPosition()).toEqual({ x: 51, y: 51 });
-            expect(ball.getVelocity()).toEqual({ x: 1, y: 1 });
+            expect(ball.position).toEqual({ x: 51, y: 51 });
+            expect(ball.velocity).toEqual({ x: 1, y: 1 });
         });
 
         it('should not move ball if canMove is false', () => {
@@ -97,8 +97,8 @@ describe('Ball class', () => {
             ball.move();
 
             // Assert
-            expect(ball.getPosition()).toEqual({ x: 50, y: 50 });
-            expect(ball.getVelocity()).toEqual({ x: 1, y: 1 });
+            expect(ball.position).toEqual({ x: 50, y: 50 });
+            expect(ball.velocity).toEqual({ x: 1, y: 1 });
         });
     });
 });

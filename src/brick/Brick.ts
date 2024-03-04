@@ -1,15 +1,13 @@
-import { CanvasEntity, RectangleDimensions } from "../canvasEntity";
+import { RectangleDimensions } from "../dimensions";
 import { Position } from "../vectors";
 
-export class Brick extends CanvasEntity<RectangleDimensions> {
+export class Brick {
     constructor(
-        position: Position,
-        dimensions: RectangleDimensions,
-        colour: string,
+        private _position: Position,
+        private _dimensions: RectangleDimensions,
+        private colour: string,
         readonly points: number,
-    ) {
-        super(position, dimensions, colour);
-    };
+    ) { };
 
     readonly draw = (ctx: CanvasRenderingContext2D) => {
         ctx.save();
@@ -19,7 +17,7 @@ export class Brick extends CanvasEntity<RectangleDimensions> {
         ctx.fillRect(
             this.position.x,
             this.position.y,
-            this.dimensions.width, 
+            this.dimensions.width,
             this.dimensions.height,
         );
         ctx.restore();
@@ -28,5 +26,19 @@ export class Brick extends CanvasEntity<RectangleDimensions> {
     readonly getBoundingBox = () => {
         return this.dimensions;
     };
+
+    public get dimensions() {
+        return this._dimensions;
+    }
+    public set dimensions(value: RectangleDimensions) {
+        this._dimensions = value;
+    }
+
+    public get position(): Position {
+        return this._position;
+    }
+    public set position(value: Position) {
+        this._position = value;
+    }
 };
 
