@@ -78,7 +78,7 @@ describe('Paddle class', () => {
             );
 
             paddle.setVelocity(initialVelocity);
-            paddle.setCanMove(false);
+            paddle.canMove = false;
 
             // Act
             paddle.move();

@@ -5,7 +5,6 @@ import { Paddle } from "./paddle";
 
 type State = {
     components: (Ball | Paddle | Brick)[],
-    canBallMove: boolean,
     ballSpeed: number,
     score: number,
     ballsRemaining: number,
@@ -13,7 +12,6 @@ type State = {
 
 export const state: State = {
     components: [],
-    canBallMove: false,
     ballSpeed: isMobile() ? 9 : 5,
     score: 0,
     ballsRemaining: 3,

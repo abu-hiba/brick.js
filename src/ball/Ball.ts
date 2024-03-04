@@ -9,6 +9,7 @@ export class Ball extends MovableCanvasEntity<CircleDimensions> {
         colour: string = '#414868',
     ) {
         super(position, velocity, dimensions, colour);
+        this.canMove = false;
     };
 
     readonly draw = (ctx: CanvasRenderingContext2D) => {
@@ -28,6 +29,9 @@ export class Ball extends MovableCanvasEntity<CircleDimensions> {
     };
 
     readonly move = () => {
+        if (!this.canMove) {
+            return;
+        }
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     };

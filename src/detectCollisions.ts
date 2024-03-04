@@ -41,7 +41,7 @@ export const detectCollisions = (
                 components.splice(components.indexOf(brick), 1);
                 state.score += brick.points;
 
-                ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
+                ball.setVelocity({ x: ballVelocity.x * 1.02, y: -ballVelocity.y * 1.02 });
             }
         });
 
@@ -64,12 +64,11 @@ export const detectCollisions = (
             if (state.ballsRemaining === 0) {
                 components.splice(components.indexOf(ball), 1);
             } else {
-                ball.setVelocity({ x: 0, y: 0 });
                 ball.setPosition({
                     x: paddlePosition.x + RADIUS + 1,
                     y: paddlePosition.y - RADIUS - 1
                 });
-                state.canBallMove = false;
+                ball.canMove = false;
             }
         }
     } else if (component instanceof Paddle) {
@@ -83,7 +82,7 @@ export const detectCollisions = (
         const collidesWithLeftEdge = paddlePosition.x + paddleVelocity.x < 0;
 
         if (collidesWithRightEdge || collidesWithLeftEdge) {
-            paddle.setCanMove(false);
+            paddle.canMove = false;
         }
     }
 };
