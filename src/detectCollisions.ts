@@ -56,6 +56,7 @@ export const detectCollisions = (
 
         if (collidesWithPaddle || collidesWithTopEdge) {
             ball.setVelocity({ x: ballVelocity.x, y: -ballVelocity.y });
+            return;
         }
 
         if (collidesWithBottomEdge) {
