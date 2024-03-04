@@ -87,9 +87,7 @@ const loop = () => {
             x: paddlePosition.x + RADIUS + 1,
             y: paddlePosition.y - RADIUS - 1
         });
-        ball.setVelocity({ x: 0, y: 0 });
-        state.ballSpeed += 2;
-        state.canBallMove = false;
+        ball.canMove = false;
     }
 };
 
@@ -101,17 +99,31 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const ball = currentBall();
     let x = 0;
     if (event.key === ARROW_LEFT) {
-        if (state.canBallMove === false) {
-            state.canBallMove = true;
-            ball.setVelocity({ x: -state.ballSpeed, y: -state.ballSpeed });
+        if (!ball.canMove) {
+            ball.canMove = true;
+
+            if (ball.getVelocity().x === 0 && ball.getVelocity().y === 0) {
+                ball.setVelocity({ x: -state.ballSpeed, y: -state.ballSpeed });
+            }
+            ball.setVelocity({
+                x: ball.getVelocity().x > 0 ? -ball.getVelocity().x : ball.getVelocity().x,
+                y: -ball.getVelocity().y
+            });
         }
 
         x = -PADDLE_VELOCITY_X;
         leftButton.setAttribute('class', `${leftButton.className} pressed`);
     } else if (event.key === ARROW_RIGHT) {
-        if (state.canBallMove === false) {
-            state.canBallMove = true;
-            ball.setVelocity({ x: state.ballSpeed, y: -state.ballSpeed });
+        if (!ball.canMove) {
+            ball.canMove = true;
+
+            if (ball.getVelocity().x === 0 && ball.getVelocity().y === 0) {
+                ball.setVelocity({ x: -state.ballSpeed, y: -state.ballSpeed });
+            }
+            ball.setVelocity({
+                x: ball.getVelocity().x < 0 ? -ball.getVelocity().x : ball.getVelocity().x,
+                y: -ball.getVelocity().y
+            });
         }
 
         x = PADDLE_VELOCITY_X;

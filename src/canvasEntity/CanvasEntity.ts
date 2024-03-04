@@ -17,6 +17,8 @@ export abstract class CanvasEntity<DimensionType extends Dimensions> {
 };
 
 export abstract class MovableCanvasEntity<DimensionType extends Dimensions> extends CanvasEntity<DimensionType> {
+    private _canMove = true;
+
     constructor(
         position: Position,
         protected velocity: Velocity,
@@ -31,5 +33,11 @@ export abstract class MovableCanvasEntity<DimensionType extends Dimensions> exte
     readonly setVelocity = (velocity: Velocity) => {
         this.velocity = velocity
     };
+    public get canMove() {
+        return this._canMove;
+    }
+    public set canMove(value) {
+        this._canMove = value;
+    }
 }
 
