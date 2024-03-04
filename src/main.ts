@@ -1,6 +1,5 @@
 import { Ball } from './ball';
 import { Brick, createBricks } from './brick';
-import { MovableCanvasEntity } from './canvasEntity';
 import { Paddle } from './paddle';
 import { GameCanvas } from './gameCanvas';
 import { ScoreBoard } from './scoreBoard';
@@ -72,24 +71,22 @@ const loop = () => {
         );
         component.draw(gameCanvas.context);
 
-        if (component instanceof MovableCanvasEntity) {
+        if ('move' in component) {
             component.move();
         }
     });
 
     if (currentBricks().length === 0) {
-        const paddlePosition = paddle.getPosition();
+        const paddlePosition = paddle.position;
         const ball = currentBall();
 
         state.components.push(...bricks);
         state.ballsRemaining++;
-        ball.setPosition({
+        ball.position = {
             x: paddlePosition.x + RADIUS + 1,
             y: paddlePosition.y - RADIUS - 1
-        });
-        ball.setVelocity({ x: 0, y: 0 });
-        state.ballSpeed += 2;
-        state.canBallMove = false;
+        };
+        ball.canMove = false;
     }
 };
 
@@ -101,24 +98,38 @@ const handleKeyDown = (event: KeyboardEvent) => {
     const ball = currentBall();
     let x = 0;
     if (event.key === ARROW_LEFT) {
-        if (state.canBallMove === false) {
-            state.canBallMove = true;
-            ball.setVelocity({ x: -state.ballSpeed, y: -state.ballSpeed });
+        if (!ball.canMove) {
+            ball.canMove = true;
+
+            if (ball.velocity.x === 0 && ball.velocity.y === 0) {
+                ball.velocity = { x: -state.ballSpeed, y: -state.ballSpeed };
+            }
+            ball.velocity = {
+                x: ball.velocity.x > 0 ? -ball.velocity.x : ball.velocity.x,
+                y: -ball.velocity.y
+            };
         }
 
         x = -PADDLE_VELOCITY_X;
         leftButton.setAttribute('class', `${leftButton.className} pressed`);
     } else if (event.key === ARROW_RIGHT) {
-        if (state.canBallMove === false) {
-            state.canBallMove = true;
-            ball.setVelocity({ x: state.ballSpeed, y: -state.ballSpeed });
+        if (!ball.canMove) {
+            ball.canMove = true;
+
+            if (ball.velocity.x === 0 && ball.velocity.y === 0) {
+                ball.velocity = { x: -state.ballSpeed, y: -state.ballSpeed };
+            }
+            ball.velocity = {
+                x: ball.velocity.x < 0 ? -ball.velocity.x : ball.velocity.x,
+                y: -ball.velocity.y
+            };
         }
 
         x = PADDLE_VELOCITY_X;
         rightButton.setAttribute('class', `${rightButton.className} pressed`);
     }
 
-    paddle.setVelocity({ x, y: 0 });
+    paddle.velocity = { x, y: 0 };
     pressedKeys.add(event.key);
 };
 
@@ -140,7 +151,7 @@ const handleKeyUp = (event: KeyboardEvent) => {
             x = PADDLE_VELOCITY_X;
         }
 
-        paddle.setVelocity({ x, y: 0 });
+        paddle.velocity = { x, y: 0 };
     }
 };
 
