@@ -12,13 +12,15 @@ type CreateRowOfBricksParams = {
 
 const createRowOfBricks = (params: CreateRowOfBricksParams) => {
     const bricks: Brick[] = [];
-    const brickWidth = params.rowWidth / params.bricksPerRow / 1.05;
+    const horizontalPadding = 1.05;
+    const verticalPadding = 1.6;
+    const brickWidth = params.rowWidth / params.bricksPerRow / horizontalPadding;
 
     for (let i = 0; i < params.bricksPerRow; i++) {
         const brick = new Brick(
             {
-                x: (i * brickWidth) * 1.05 + 1.05,
-                y: params.rowIndex * params.rowHeight * 1.6 + 1.6
+                x: (i * brickWidth) * horizontalPadding + horizontalPadding,
+                y: params.rowIndex * params.rowHeight * verticalPadding + verticalPadding
             },
             {
                 width: brickWidth,
