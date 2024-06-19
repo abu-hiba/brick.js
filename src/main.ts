@@ -1,5 +1,5 @@
 import { Ball } from './ball';
-import { Brick, createBricks } from './brick';
+import { createBricks } from './brick';
 import { Paddle } from './paddle';
 import { GameCanvas } from './gameCanvas';
 import { ScoreBoard } from './scoreBoard';
@@ -34,16 +34,9 @@ const ball = new Ball(
     { radius: RADIUS },
     { x: 0, y: 0 },
 );
-const bricks = createBricks(gameCanvas.context, gameCanvas.width);
+const bricks = createBricks(gameCanvas.width);
 
 state.components = [paddle, ball, ...bricks];
-
-const currentBall = () => state.components.filter(
-    (component): component is Ball => component instanceof Ball
-)[0];
-const currentBricks = () => state.components.filter(
-    (component): component is Brick => component instanceof Brick
-);
 
 const loop = () => {
     requestAnimationFrame(loop);
@@ -66,7 +59,7 @@ const loop = () => {
             component,
             state.components,
             paddle,
-            currentBricks(),
+            state.currentBricks(),
             gameCanvas,
         );
         component.draw(gameCanvas.context);
@@ -76,9 +69,9 @@ const loop = () => {
         }
     });
 
-    if (currentBricks().length === 0) {
+    if (state.currentBricks().length === 0) {
         const paddlePosition = paddle.position;
-        const ball = currentBall();
+        const ball = state.currentBall();
 
         state.components.push(...bricks);
         state.ballsRemaining++;
@@ -95,7 +88,7 @@ const loop = () => {
 const pressedKeys = new Set<string>();
 
 const handleKeyDown = (event: KeyboardEvent) => {
-    const ball = currentBall();
+    const ball = state.currentBall();
     let x = 0;
     if (event.key === ARROW_LEFT) {
         if (!ball.canMove) {
