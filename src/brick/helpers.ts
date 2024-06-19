@@ -7,7 +7,6 @@ type CreateRowOfBricksParams = {
     rowHeight: number,
     bricksPerRow: number,
     rowWidth: number,
-    context: CanvasRenderingContext2D,
 };
 
 const createRowOfBricks = (params: CreateRowOfBricksParams) => {
@@ -35,7 +34,7 @@ const createRowOfBricks = (params: CreateRowOfBricksParams) => {
     return bricks;
 };
 
-export const createBricks = (context: CanvasRenderingContext2D, rowWidth: number) => {
+export const createBricks = (rowWidth: number) => {
     const colours = ['#9ECE6A', '#E0AF68', '#F7768E', '#7DCFFF'];
     const bricks: Brick[] = [];
 
@@ -48,7 +47,6 @@ export const createBricks = (context: CanvasRenderingContext2D, rowWidth: number
             rowHeight: 20,
             rowWidth,
             bricksPerRow: 8,
-            context,
         });
         bricks.push(...row);
     }
